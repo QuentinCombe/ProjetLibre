@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name"></string>
+    <string name="item1">Profile</string>
+    <string name="item2">Map</string>
+    <string name="item3">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="fragmentMap">MAP</string>
+    <string name="fragmentProfile">PROFILE</string>
+    <string name="fragmentSettings">SETTINGS</string>
+</resources>
