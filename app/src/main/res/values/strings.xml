@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Projet libre</string>
     <string name="item1">Profile</string>
     <string name="item2">Map</string>
     <string name="item3">Settings</string>
