@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.google.android.gms.maps.MapFragment;
+
 /**
  * Created by quent on 11/02/2017.
  */
