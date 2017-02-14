@@ -4,8 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.google.android.gms.maps.MapFragment;
-
 /**
  * Created by quent on 11/02/2017.
  */
@@ -23,14 +21,14 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Profile tabProfile = new Profile();
+                ProfileTab tabProfile = new ProfileTab();
                 System.out.println("LALALALALA");
                 return tabProfile;
             case 1:
-                MapActivity tabMap = new MapActivity();
-                return tabMap;
+                MapTab mapTab = new MapTab();
+                return mapTab;
             case 2:
-                SettingsActivity tabSettings = new SettingsActivity();
+                SettingsTab tabSettings = new SettingsTab();
                 return tabSettings;
             default:
                 return null;
