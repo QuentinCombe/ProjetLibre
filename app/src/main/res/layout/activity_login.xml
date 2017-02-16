@@ -96,6 +96,14 @@
                 android:textColorLink="@color/colorPrimaryDark"
                 android:backgroundTint="@color/colorPrimaryDark" />
 
+            <TextView android:id="@+id/link_signup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/action_register"
+                android:gravity="center"
+                android:textSize="18sp"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
