@@ -8,4 +8,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/clueImageView"
+        android:layout_margin="8dp"
+        android:visibility="invisible"
+        android:src="@drawable/sunset"
+        android:padding="1dp"
+        android:background="#000000" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/objectiveInfoLayout"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="visible"
+        android:orientation="horizontal"
+        android:background="@android:color/darker_gray"
+        android:padding="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/idCircleTextView"
+                android:text="Bouton 1"
+                android:padding="16dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/showClueButton"
+                android:text="Show Clue"
+                android:padding="16dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take picture"
+                android:padding="16dp" />
+
+    </LinearLayout>
+
 </FrameLayout>

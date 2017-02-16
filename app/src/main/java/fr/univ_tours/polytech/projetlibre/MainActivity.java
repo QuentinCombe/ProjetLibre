@@ -6,15 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity {
-
-
+public class MainActivity extends AppCompatActivity
+{
     private TabLayout tabFooter;
 
     private ViewPager viewPager;
 
+    private MapController mMapController = new MapController();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -33,13 +35,18 @@ public class MainActivity extends AppCompatActivity {
         // Creation of our PageAdapter
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabFooter.getTabCount());
 
+
+
         // Adding the adapter to the page
         viewPager.setAdapter(adapter);
+
+
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabFooter));
         tabFooter.addOnTabSelectedListener (new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(TabLayout.Tab tab)
+            {
                 System.out.println("ICI"+tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
             }
@@ -54,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        mMapController = new MapController();
     }
 
     public void setupTabLayout(TabLayout tabLayout) {
@@ -63,5 +72,10 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(1).setIcon(R.drawable.placeholder);
         tabLayout.getTabAt(2).setIcon(R.drawable.settings);
 
+    }
+
+    public MapController getmMapController()
+    {
+        return mMapController;
     }
 }

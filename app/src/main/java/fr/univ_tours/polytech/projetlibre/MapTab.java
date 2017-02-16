@@ -1,5 +1,6 @@
 package fr.univ_tours.polytech.projetlibre;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,28 +27,50 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapTab extends Fragment
         implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private MapView mMapView;
-    private GoogleMap mMap;
+    // private MapView mMapView;
+
+    private GoogleMap mMap = null;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private Circle circle;
+
+    private View mRootView;
+
+    private MapController mMapController = null;
+
+    private ArrayList<Circle> mCircles = new ArrayList<>();
+    private Circle mCircledSelected = null;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
+        MainActivity mainActivity = (MainActivity) getActivity();
+
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_map, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-        mMapView = (MapView) v.findViewById(R.id.mapView);
+        mMapController = mainActivity.getmMapController();
+        mMapController.setRootView(mRootView);
 
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume();
+        // In MapController.java ??
+        MapView mapView = (MapView) mRootView.findViewById(R.id.mapView);
 
-        mMapView.getMapAsync(this);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+
+        mapView.getMapAsync(this);
+
 
         if (mGoogleApiClient == null)
         {
@@ -56,7 +81,7 @@ public class MapTab extends Fragment
                     .build();
         }
 
-        return v;
+        return mRootView;
     }
 
     @Override
@@ -68,54 +93,81 @@ public class MapTab extends Fragment
 
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
-
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(47.3945427, 0.6910287000000608))
-                .radius(100)
-                .strokeWidth(0.0f)
-                .fillColor(0x750000ff);
-
-
-         circle = mMap.addCircle(circleOptions);
     }
 
     @Override
-    public void onMapClick(LatLng position) {
-
-        LatLng center = circle.getCenter();
-        double radius = circle.getRadius();
-        float[] distance = new float[1];
-        Location.distanceBetween(position.latitude, position.longitude, center.latitude, center.longitude, distance);
-        boolean clicked = distance[0] < radius;
-
-        System.out.println("Cercle");
-    }
-
-    public void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-    }
-
-    public void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(Bundle bundle)
+    {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()), 15.0f));
+
+        // We are connected, so we can create of a few circles
+        ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
+
+        for (CircleOptions circleOption : circleOptions)
+        {
+            mCircles.add(mMap.addCircle(circleOption));
+        }
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onMapClick(LatLng position)
+    {
+        int idCircledClicked = mMapController.handleOnMapClick(position);
+
+        if (idCircledClicked != -1)
+        {
+            mCircledSelected = mCircles.get(idCircledClicked);
+
+            mCircledSelected.setStrokeWidth(8.0f);
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+
+        }
+        else
+        {
+            if (mCircledSelected != null)
+            {
+                mCircledSelected.setStrokeWidth(0.0f);
+                mCircledSelected = null;
+            }
+        }
+    }
+
+    public void showClue(View view)
+    {
+        mMapController.showClue();
+    }
+
+    public void onStart()
+    {
+        mGoogleApiClient.connect();
+
+        super.onStart();
+    }
+
+    public void onStop()
+    {
+        mGoogleApiClient.disconnect();
+
+        super.onStop();
+    }
+
+
+
+    @Override
+    public void onConnectionSuspended(int i)
+    {
 
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult)
+    {
 
     }
+
+
 }
