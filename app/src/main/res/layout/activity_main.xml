@@ -31,7 +31,7 @@
         android:layout_height="54dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        app:tabIndicatorColor="@android:color/holo_green_dark"
+        app:tabIndicatorColor="?attr/colorPrimaryDark"
         android:id="@+id/footer">
 
         <android.support.design.widget.TabItem
