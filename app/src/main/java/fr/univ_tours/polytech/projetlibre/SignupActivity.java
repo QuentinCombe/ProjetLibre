@@ -87,7 +87,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         boolean cancel = false;
         View focusView = null;
 
-        if(!TextUtils.isEmpty(name)){
+        if(TextUtils.isEmpty(name)){
             passwordField.setError(getString(R.string.error_field_required));
             focusView = nameField;
             cancel = true;
