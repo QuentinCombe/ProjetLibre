@@ -1,6 +1,7 @@
 package fr.univ_tours.polytech.projetlibre;
 
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,36 +41,42 @@ public class MapController
 
     }
 
-    public ArrayList<CircleOptions> constructCircles()
-    {
+    public ArrayList<CircleOptions> constructCircles() {
         // Recherche dans la BDD etc
         JSONObject objectiveJsonObject = DatabaseHandler.getInstance().getObjectives();
 
-        System.out.println("Objectives : " + objectiveJsonObject.toString());
+        if (objectiveJsonObject != null)
+        {
+            System.out.println("Objectives : " + objectiveJsonObject.toString());
+        }
+        else
+        {
+             System.out.println("Cant reach database");
 
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(47.3945427, 0.6910287000000608))
-                .radius(100)
-                .strokeWidth(0.0f)
-                .fillColor(mCircleColor);
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(new LatLng(47.3945427, 0.6910287000000608))
+                    .radius(100)
+                    .strokeWidth(0.0f)
+                    .fillColor(mCircleColor);
 
-        circles.add(circleOptions);
+            circles.add(circleOptions);
 
-        circleOptions = new CircleOptions()
-                .center(new LatLng(47.365197, 0.680741))
-                .radius(100)
-                .strokeWidth(0.0f)
-                .fillColor(mCircleColor);
+            circleOptions = new CircleOptions()
+                    .center(new LatLng(47.365197, 0.680741))
+                    .radius(100)
+                    .strokeWidth(0.0f)
+                    .fillColor(mCircleColor);
 
-        circles.add(circleOptions);
+            circles.add(circleOptions);
 
-        circleOptions = new CircleOptions()
-                .center(new LatLng(47.367671, 0.684174))
-                .radius(100)
-                .strokeWidth(0.0f)
-                .fillColor(mCircleColor);
+            circleOptions = new CircleOptions()
+                    .center(new LatLng(47.367671, 0.684174))
+                    .radius(100)
+                    .strokeWidth(0.0f)
+                    .fillColor(mCircleColor);
 
-        circles.add(circleOptions);
+            circles.add(circleOptions);
+        }
 
         return circles;
 

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                System.out.println("ICI"+tab.getPosition());
+                System.out.println("ICI : "+tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
             }
 

@@ -22,7 +22,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 ProfileTab tabProfile = new ProfileTab();
-                System.out.println("LALALALALA");
                 return tabProfile;
             case 1:
                 MapTab mapTab = new MapTab();

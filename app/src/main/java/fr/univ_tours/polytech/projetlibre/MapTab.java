@@ -146,6 +146,12 @@ public class MapTab extends Fragment
     {
         int idCircledClicked = mMapController.handleOnMapClick(position);
 
+        if (mCircledSelected != null)
+        {
+            mCircledSelected.setStrokeWidth(0.0f);
+            mCircledSelected = null;
+        }
+
         if (idCircledClicked != -1)
         {
             mCircledSelected = mCircles.get(idCircledClicked);
@@ -153,15 +159,6 @@ public class MapTab extends Fragment
             mCircledSelected.setStrokeWidth(8.0f);
 
             mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
-
-        }
-        else
-        {
-            if (mCircledSelected != null)
-            {
-                mCircledSelected.setStrokeWidth(0.0f);
-                mCircledSelected = null;
-            }
         }
     }
 
