@@ -34,6 +34,8 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.android.gms.internal.zzir.runOnUiThread;
+
 public class MapTab extends Fragment
         implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -87,6 +89,8 @@ public class MapTab extends Fragment
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
+        Log.v("MapTab", "onMapReady");
+
         mMap = googleMap;
 
         MapsInitializer.initialize(getActivity());
@@ -98,10 +102,35 @@ public class MapTab extends Fragment
     @Override
     public void onConnected(Bundle bundle)
     {
+        /*runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
+
+                if (mLastLocation != null)
+                {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
+                }
+
+
+            }
+        });*/
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()), 15.0f));
+        //if (mLastLocation != null)
+        //{
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
+        //}
 
         // We are connected, so we can create of a few circles
         ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class MapController
 
     private GoogleMap.InfoWindowAdapter infoWindow;
 
+    private int mCircleColor = 0x750000ff;
+
     public void MapController()
     {
 
@@ -40,13 +43,15 @@ public class MapController
     public ArrayList<CircleOptions> constructCircles()
     {
         // Recherche dans la BDD etc
+        JSONObject objectiveJsonObject = DatabaseHandler.getInstance().getObjectives();
+
+        System.out.println("Objectives : " + objectiveJsonObject.toString());
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(47.3945427, 0.6910287000000608))
                 .radius(100)
                 .strokeWidth(0.0f)
-                .fillColor(0x750000ff);
-
+                .fillColor(mCircleColor);
 
         circles.add(circleOptions);
 
@@ -54,7 +59,7 @@ public class MapController
                 .center(new LatLng(47.365197, 0.680741))
                 .radius(100)
                 .strokeWidth(0.0f)
-                .fillColor(0x750000ff);
+                .fillColor(mCircleColor);
 
         circles.add(circleOptions);
 
@@ -62,7 +67,7 @@ public class MapController
                 .center(new LatLng(47.367671, 0.684174))
                 .radius(100)
                 .strokeWidth(0.0f)
-                .fillColor(0x750000ff);
+                .fillColor(mCircleColor);
 
         circles.add(circleOptions);
 
