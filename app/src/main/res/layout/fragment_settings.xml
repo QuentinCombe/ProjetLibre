@@ -1,15 +1,113 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fr.univ_tours.polytech.projetlibre.SettingsTab">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/text2"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:text="@string/fragmentSettings" />
+        android:weightSum="1">
 
+        <ImageView
+            android:layout_width="match_parent"
+            app:srcCompat="@drawable/user"
+            android:id="@+id/profilePicture"
+            android:layout_height="100dp"
+            android:paddingTop="5dp" />
+
+        <TextView
+            android:text="Edit Profile Picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/EditProfil"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:textColor="@color/colorPrimary"
+            android:paddingBottom="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:drawableLeft="@drawable/idcard"
+            android:drawablePadding="@dimen/activity_vertical_margin"
+            android:text="YoursName"
+            android:ems="10"
+            android:id="@+id/NameField"
+            android:paddingTop="15dp"
+            android:paddingLeft="20dp"
+            android:textCursorDrawable="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:backgroundTint="@color/common_action_bar_splitter" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:drawableLeft="@drawable/mail"
+            android:drawablePadding="@dimen/activity_vertical_margin"
+            android:ems="10"
+            android:id="@+id/EmailField"
+            android:text="YourEmail@mail.com"
+            android:paddingTop="15dp"
+            android:paddingLeft="20dp"
+            android:textColorHighlight="@color/colorPrimary"
+            android:backgroundTint="@color/common_action_bar_splitter" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/key"
+            android:drawablePadding="@dimen/activity_vertical_margin"
+            android:ems="10"
+            android:id="@+id/PasswordField"
+            android:text="MyPassowrd"
+            android:paddingTop="15dp"
+            android:paddingLeft="20dp"
+            android:textColorHighlight="@color/colorPrimary"
+            android:backgroundTint="@color/common_action_bar_splitter" />
+
+        <TextView
+            android:text="Confirm your password :"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:textSize="14sp"
+            android:paddingLeft="25dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/colorPrimary" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:drawableLeft="@drawable/key"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:backgroundTint="@color/common_action_bar_splitter" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/validate"
+            android:elevation="0dp"
+            android:text="Validate"
+            android:layout_gravity="center"
+
+            style="@style/AppTheme"
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent"
+            android:background="@color/colorPrimaryDark"
+            android:backgroundTintMode="add"
+            android:layout_marginTop="15dp" />
+
+    </LinearLayout>
 </FrameLayout>

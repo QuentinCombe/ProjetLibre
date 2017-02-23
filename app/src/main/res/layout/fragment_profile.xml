@@ -1,15 +1,83 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fr.univ_tours.polytech.projetlibre.ProfileTab">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/text3"
-        android:layout_width="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_height="match_parent"
-        android:text="@string/fragmentProfile" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/user"
+            android:id="@+id/imageView"
+            android:paddingTop="10dp" />
+
+        <TextView
+            android:text="Profile Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ProfileName"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:paddingTop="15dp"
+            android:editable="false"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:text="Lvl : "
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lvlField"
+            android:layout_weight="0.04"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:typeface="normal"
+            android:paddingLeft="100dp" />
+
+        <TextView
+            android:text="Experience :"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ExpField"
+            android:layout_weight="0.06"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:paddingLeft="100dp"
+            android:paddingBottom="10dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@color/colorPrimary"
+            android:id="@+id/imageView3"
+            android:layout_weight="0.01"
+            android:paddingBottom="15dp"
+            android:paddingRight="35dp"
+            android:paddingLeft="35dp" />
+
+        <TextView
+            android:text="Quest achieved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/QuestField"
+            android:layout_weight="0.04"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimary" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:layout_weight="0.60"
+            android:id="@+id/QuestAchievedList" />
+
+    </LinearLayout>
 </FrameLayout>
