@@ -6,6 +6,7 @@ package fr.univ_tours.polytech.projetlibre.model;
 
 public class Objective
 {
+    public int id;
     public int difficulty;
     public Circle circle;
 }
