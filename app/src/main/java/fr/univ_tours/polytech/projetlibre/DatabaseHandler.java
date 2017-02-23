@@ -33,6 +33,10 @@ public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
 
+    private String ipAdress = "192.168.1.12:8080";
+    private String scriptToExecute = null;
+    private String urlProvided = null;
+
     private DatabaseHandler()
     {
 
@@ -43,13 +47,14 @@ public class DatabaseHandler
         return Inst;
     }
 
-    /*public void tryToGetObjectives()
-    {
-    }*/
-
     public JSONObject getObjectives()
     {
-        MyAsyncTask getObjectivesAsyncTask = new MyAsyncTask();
+        scriptToExecute = "getObjectives.php";
+        urlProvided = "http://" + ipAdress + "/projetlibre/" + scriptToExecute;
+
+        System.out.print("URL = " + urlProvided);
+
+        MyAsyncTask getObjectivesAsyncTask = new MyAsyncTask(urlProvided);
         getObjectivesAsyncTask.execute();
 
         String result = null;
@@ -61,27 +66,32 @@ public class DatabaseHandler
             e.printStackTrace();
         }
 
-        System.out.println("OnPostExecute = " + result);
         JSONObject obj = null;
 
-        try
+        if (result != null)
         {
-            JSONArray array = new JSONArray(result);
+            try {
+                JSONArray array = new JSONArray(result);
 
-            obj = array.getJSONObject(0);
-        }
-         catch (JSONException e)
-        {
-            e.printStackTrace();
+                obj = array.getJSONObject(0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         return obj;
     }
 
-    class MyAsyncTask extends AsyncTask<Void, Void, String> {
-        public MyAsyncTask() {
+    class MyAsyncTask extends AsyncTask<Void, Void, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTask(String url)
+        {
+            urlProvided = url;
         }
 
+        @SuppressWarnings("Timeout and status to handle")
         @Override
         protected String doInBackground(Void... params) {
             // These two need to be declared outside the try/catch
@@ -90,20 +100,19 @@ public class DatabaseHandler
             BufferedReader reader = null;
 
             // Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
+            String result = null;
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://192.168.1.12:8080/projetlibre/getObjectives.php");
+                URL url = new URL(urlProvided);
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
+
                 urlConnection.setReadTimeout(3000);
                 urlConnection.setRequestMethod("POST");
-
-                System.out.println("HELLO");
 
                 urlConnection.connect();
 
@@ -111,35 +120,39 @@ public class DatabaseHandler
 
                 System.out.println(status + " ");
 
+                if (status == 200)
+                {
+                    // Read the input stream into a String
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        // Nothing to do.
+                        return null;
+                    }
 
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
-                    return null;
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                        // But it does make debugging a *lot* easier if you print out the completed
+                        // buffer for debugging.
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0) {
+                        // Stream was empty.  No point in parsing.
+                        return null;
+                    }
+                    result = buffer.toString();
                 }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-                forecastJsonStr = buffer.toString();
-                Log.v("MainActivity", forecastJsonStr);
-
-                return forecastJsonStr;
-            } catch (ProtocolException e) {
+                return result;
+            }
+            catch (ProtocolException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e("PlaceholderFragment", "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
@@ -164,21 +177,6 @@ public class DatabaseHandler
         protected void onPostExecute(String s)
         {
             super.onPostExecute(s);
-
-            /*System.out.println("OnPostExecute = " + s);
-
-            try {
-                JSONArray array = new JSONArray(s);
-
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
-
-                    System.out.println(obj.get("idObjective"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            */
         }
 
     }
