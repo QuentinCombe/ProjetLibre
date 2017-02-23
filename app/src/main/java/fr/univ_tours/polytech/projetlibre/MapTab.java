@@ -37,9 +37,8 @@ import java.util.List;
 import static com.google.android.gms.internal.zzir.runOnUiThread;
 
 public class MapTab extends Fragment
-        implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    // private MapView mMapView;
+        implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+{
 
     private GoogleMap mMap = null;
     private GoogleApiClient mGoogleApiClient;

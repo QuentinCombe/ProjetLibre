@@ -19,6 +19,8 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.univ_tours.polytech.projetlibre.model.Objective;
+
 /**
  * Created by Alkpo on 14/02/2017.
  */
@@ -30,7 +32,10 @@ public class MapController
     private LinearLayout objectiveInfoLayout;
     private ImageView mClueImageView;
 
-    private ArrayList<CircleOptions> circles = new ArrayList<>();
+    private ArrayList<CircleOptions> mCircles = new ArrayList<>();
+    private List<Objective> mListObjectives = null;
+
+    private int mIdCircleSelected = -1;
 
     private GoogleMap.InfoWindowAdapter infoWindow;
 
@@ -41,17 +46,23 @@ public class MapController
 
     }
 
-    public ArrayList<CircleOptions> constructCircles() {
-        // Recherche dans la BDD etc
-        JSONObject objectiveJsonObject = DatabaseHandler.getInstance().getObjectives();
+    public ArrayList<CircleOptions> constructCircles()
+    {
+        mListObjectives = DatabaseHandler.getInstance().getObjectives();
 
-        if (objectiveJsonObject != null)
+        if (mListObjectives != null)
         {
-            System.out.println("Objectives : " + objectiveJsonObject.toString());
+            for (Objective objective : mListObjectives)
+            {
+                CircleOptions circleOptions = Objective.convertToCircleOptions(objective);
+
+                circleOptions.strokeWidth(0.0f).fillColor(mCircleColor);
+                mCircles.add(circleOptions);
+            }
         }
         else
         {
-             System.out.println("Cant reach database");
+            Log.v(getClass().toString(), "Cant reach database, add dummy circles");
 
             CircleOptions circleOptions = new CircleOptions()
                     .center(new LatLng(47.3945427, 0.6910287000000608))
@@ -59,7 +70,7 @@ public class MapController
                     .strokeWidth(0.0f)
                     .fillColor(mCircleColor);
 
-            circles.add(circleOptions);
+            mCircles.add(circleOptions);
 
             circleOptions = new CircleOptions()
                     .center(new LatLng(47.365197, 0.680741))
@@ -67,7 +78,7 @@ public class MapController
                     .strokeWidth(0.0f)
                     .fillColor(mCircleColor);
 
-            circles.add(circleOptions);
+            mCircles.add(circleOptions);
 
             circleOptions = new CircleOptions()
                     .center(new LatLng(47.367671, 0.684174))
@@ -75,10 +86,10 @@ public class MapController
                     .strokeWidth(0.0f)
                     .fillColor(mCircleColor);
 
-            circles.add(circleOptions);
+            mCircles.add(circleOptions);
         }
 
-        return circles;
+        return mCircles;
 
     }
 
@@ -109,10 +120,10 @@ public class MapController
 
     public int getIdCircleClicked(LatLng position)
     {
-        for (int i = 0; i < circles.size(); i++)
+        for (int i = 0; i < mCircles.size(); i++)
         {
-            LatLng center = circles.get(i).getCenter();
-            double radius = circles.get(i).getRadius();
+            LatLng center = mCircles.get(i).getCenter();
+            double radius = mCircles.get(i).getRadius();
             float[] distance = new float[1];
             Location.distanceBetween(position.latitude, position.longitude, center.latitude, center.longitude, distance);
 
@@ -127,15 +138,22 @@ public class MapController
 
     public int handleOnMapClick(LatLng position)
     {
-        int idCircleClicked = getIdCircleClicked(position);
+        mIdCircleSelected = getIdCircleClicked(position);
 
-        if (idCircleClicked != -1)
+        if (mIdCircleSelected != -1)
         {
+            Log.w(getClass().toString(), "Dangereux : utiliser une autre structure de donnee/autre modele");
+
+            Objective objective = mListObjectives.get(mIdCircleSelected);
+
             objectiveInfoLayout.setVisibility(View.VISIBLE);
 
-
             TextView textView = (TextView) objectiveInfoLayout.findViewById(R.id.idCircleTextView);
-            textView.setText("Cercle " + idCircleClicked);
+            textView.setText("Cercle " + mIdCircleSelected);
+
+            Log.v(getClass().toString(), "IdObjective = " + objective.id);
+
+            mClueImageView.setImageBitmap(objective.clue.image);
         }
         else
         {
@@ -145,7 +163,12 @@ public class MapController
             }
         }
 
-        return idCircleClicked;
+        return mIdCircleSelected;
+    }
+
+    public void clearMapView()
+    {
+        mClueImageView.setVisibility(View.INVISIBLE);
     }
 
     public void showClue()

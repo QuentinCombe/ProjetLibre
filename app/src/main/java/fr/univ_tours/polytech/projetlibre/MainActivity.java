@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -14,11 +15,17 @@ public class MainActivity extends AppCompatActivity
 
     private MapController mMapController = new MapController();
 
+    public static final int TAB_PROFILE = 0;
+    public static final int TAB_MAP = 1;
+    public static final int TAB_SETTINGS = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mMapController = new MapController();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        toolbar.setLogo(R.drawable.search);
@@ -47,8 +54,13 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
-                System.out.println("ICI : "+tab.getPosition());
+                Log.v("OnTabSelected", "Tab numero " + tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
+
+                if (tab.getPosition() != TAB_MAP)
+                {
+                    mMapController.clearMapView();
+                }
             }
 
             @Override
@@ -62,15 +74,15 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mMapController = new MapController();
+
     }
 
     public void setupTabLayout(TabLayout tabLayout) {
 //        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         //tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-        tabLayout.getTabAt(0).setIcon(R.drawable.user);
-        tabLayout.getTabAt(1).setIcon(R.drawable.placeholder);
-        tabLayout.getTabAt(2).setIcon(R.drawable.settings);
+        tabLayout.getTabAt(TAB_PROFILE).setIcon(R.drawable.user);
+        tabLayout.getTabAt(TAB_MAP).setIcon(R.drawable.placeholder);
+        tabLayout.getTabAt(TAB_SETTINGS).setIcon(R.drawable.settings);
 
     }
 

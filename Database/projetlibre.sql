@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 23 Février 2017 à 13:21
+-- Généré le :  Jeu 23 Février 2017 à 15:46
 -- Version du serveur :  5.7.9
 -- Version de PHP :  5.6.16
 
@@ -42,9 +42,16 @@ DROP TABLE IF EXISTS `clue`;
 CREATE TABLE IF NOT EXISTS `clue` (
   `idClue` int(11) NOT NULL AUTO_INCREMENT,
   `description` text NOT NULL,
-  `image` blob NOT NULL,
+  `image` tinytext NOT NULL,
   PRIMARY KEY (`idClue`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `clue`
+--
+
+INSERT INTO `clue` (`idClue`, `description`, `image`) VALUES
+(1, '', '1');
 
 -- --------------------------------------------------------
 
@@ -56,20 +63,22 @@ DROP TABLE IF EXISTS `objective`;
 CREATE TABLE IF NOT EXISTS `objective` (
   `idObjective` int(11) NOT NULL AUTO_INCREMENT,
   `idClue` int(11) NOT NULL,
-  `longitude` float NOT NULL,
   `latitude` float NOT NULL,
+  `longitude` float NOT NULL,
   `radius` float NOT NULL,
   `textAfterDiscovery` text NOT NULL,
   `reward` int(11) NOT NULL,
   PRIMARY KEY (`idObjective`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `objective`
 --
 
-INSERT INTO `objective` (`idObjective`, `idClue`, `longitude`, `latitude`, `radius`, `textAfterDiscovery`, `reward`) VALUES
-(1, 1, 0.691029, 47.3945, 100, '', 2);
+INSERT INTO `objective` (`idObjective`, `idClue`, `latitude`, `longitude`, `radius`, `textAfterDiscovery`, `reward`) VALUES
+(1, 1, 47.3945, 0.691029, 300, 'Rue de la scellerie', 2),
+(2, 2, 47.3647, 0.684771, 100, 'Polytech', 1),
+(4, 3, 47.3911, 0.687374, 120, 'Rue Etienne Palu', 6);
 
 -- --------------------------------------------------------
 

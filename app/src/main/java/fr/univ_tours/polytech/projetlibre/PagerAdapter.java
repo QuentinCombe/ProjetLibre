@@ -20,13 +20,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0:
+            case MainActivity.TAB_PROFILE:
                 ProfileTab tabProfile = new ProfileTab();
                 return tabProfile;
-            case 1:
+            case MainActivity.TAB_MAP:
                 MapTab mapTab = new MapTab();
                 return mapTab;
-            case 2:
+            case MainActivity.TAB_SETTINGS:
                 SettingsTab tabSettings = new SettingsTab();
                 return tabSettings;
             default:
