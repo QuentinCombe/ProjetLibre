@@ -163,6 +163,8 @@ public class MapController
             }
         }
 
+        mClueImageView.setVisibility(View.INVISIBLE);
+
         return mIdCircleSelected;
     }
 

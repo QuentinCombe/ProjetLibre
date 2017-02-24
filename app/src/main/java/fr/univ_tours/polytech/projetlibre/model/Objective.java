@@ -44,6 +44,8 @@ public class Objective
 
                 objective.clue = DatabaseHandler.getInstance().getClueFromId(objectiveJsonObject.getInt("idClue"));
 
+
+
                 listObjectives.add(objective);
             } catch (JSONException e)
             {

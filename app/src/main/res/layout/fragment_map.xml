@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:id="@+id/objectiveInfoLayout"
         android:layout_gravity="center_horizontal|bottom"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:orientation="horizontal"
         android:background="@android:color/darker_gray"
         android:padding="2dp">

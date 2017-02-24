@@ -36,10 +36,12 @@ public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
 
-    private String ipAdress = "192.168.1.12:8080";
+    private final String ipAdress = "192.168.1.12:8080";
     private String scriptToExecute = null;
 
     private final String baseUrl = "http://" + ipAdress + "/projetlibre/";
+
+    private final int READ_TIMEOUT = 3000;
 
     private DatabaseHandler()
     {
@@ -52,15 +54,20 @@ public class DatabaseHandler
 
         scriptToExecute = "selectClueFromId.php";
 
-        MyAsyncTaskGetString getObjectivesAsyncTask = new MyAsyncTaskGetString(baseUrl + scriptToExecute);
-        getObjectivesAsyncTask.execute();
+        MyAsyncTaskGetClueById getObjectivesAsyncTask = new MyAsyncTaskGetClueById(baseUrl + scriptToExecute);
+        getObjectivesAsyncTask.execute(String.valueOf(idClue));
 
         String result = null;
-        try {
+        try
+        {
             result = getObjectivesAsyncTask.get();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e)
+        {
             e.printStackTrace();
         }
 
@@ -69,7 +76,8 @@ public class DatabaseHandler
             try
             {
                 clue = Clue.convertFromJsonObject(new JSONObject(result));
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -97,9 +105,13 @@ public class DatabaseHandler
         {
             result = getObjectivesAsyncTask.get();
 
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e)
+        {
             e.printStackTrace();
         }
 
@@ -108,7 +120,8 @@ public class DatabaseHandler
             try
             {
                 listObjectives = Objective.convertFromJsonArray(new JSONArray(result));
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -118,104 +131,111 @@ public class DatabaseHandler
     }
 
     class MyAsyncTaskGetString extends AsyncTask<Void, Void, String>
-{
-    String urlProvided = null;
-
-    public MyAsyncTaskGetString(String url)
     {
-        urlProvided = url;
-    }
+        String urlProvided = null;
 
-    @SuppressWarnings("Timeout and status to handle")
-    @Override
-    protected String doInBackground(Void... params) {
-        // These two need to be declared outside the try/catch
-        // so that they can be closed in the finally block.
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
+        public MyAsyncTaskGetString(String url)
+        {
+            urlProvided = url;
+        }
 
-        // Will contain the raw JSON response as a string.
-        String result = null;
-        InputStream inputStream = null;
+        @SuppressWarnings("Timeout and status to handle")
+        @Override
+        protected String doInBackground(Void... params)
+        {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
 
-        try {
-            // Construct the URL for the OpenWeatherMap query
-            // Possible parameters are avaiable at OWM's forecast API page, at
-            // http://openweathermap.org/API#forecast
-            URL url = new URL(urlProvided);
+            String result = null;
+            InputStream inputStream;
 
-            // Create the request to OpenWeatherMap, and open the connection
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.setReadTimeout(3000);
-            urlConnection.setRequestMethod("POST");
-
-            urlConnection.connect();
-
-            int status = urlConnection.getResponseCode();
-
-            Log.v("getObjectives", "Status = " + status);
-
-            if (status == 200)
+            try
             {
-                // Read the input stream into a String
-                inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
-                    return null;
+                URL url = new URL(urlProvided);
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setReadTimeout(3000);
+                urlConnection.setRequestMethod("POST");
+
+                urlConnection.connect();
+
+                int status = urlConnection.getResponseCode();
+
+                if (status == HttpURLConnection.HTTP_OK)
+                {
+                    // Read the input stream into a String
+                    inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null)
+                    {
+                        // Nothing to do.
+                        return null;
+                    }
+
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null)
+                    {
+                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                        // But it does make debugging a *lot* easier if you print out the completed
+                        // buffer for debugging.
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0)
+                    {
+                        // Stream was empty.  No point in parsing.
+                        return null;
+                    }
+                    result = buffer.toString();
                 }
 
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
+                return result;
+            }
+            catch (ProtocolException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get the weather data, there's no point in attemping
+                // to parse it.
+                return null;
+            }
+            finally
+            {
+                if (urlConnection != null)
+                {
+                    urlConnection.disconnect();
                 }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    }
+                    catch (final IOException e)
+                    {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
                 }
-                result = buffer.toString();
             }
 
-            return result;
-        }
-        catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            Log.e("PlaceholderFragment", "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attemping
-            // to parse it.
             return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e("PlaceholderFragment", "Error closing stream", e);
-                }
-            }
         }
 
-        return null;
-    }
+        @Override
+        protected void onPostExecute(String s)
+        {
+            super.onPostExecute(s);
+        }
 
-    @Override
-    protected void onPostExecute(String s)
-    {
-        super.onPostExecute(s);
     }
-
-}
 
     public Bitmap getBitmapClueFromName(String imageName)
     {
@@ -230,10 +250,12 @@ public class DatabaseHandler
             bitmap = getClueImageAsyncTask.get();
 
             return bitmap;
-        } catch (InterruptedException e)
+        }
+        catch (InterruptedException e)
         {
             e.printStackTrace();
-        } catch (ExecutionException e)
+        }
+        catch (ExecutionException e)
         {
             e.printStackTrace();
         }
@@ -253,7 +275,8 @@ public class DatabaseHandler
 
         @SuppressWarnings("Timeout and status to handle")
         @Override
-        protected Bitmap doInBackground(Void... params) {
+        protected Bitmap doInBackground(Void... params)
+        {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -263,7 +286,8 @@ public class DatabaseHandler
             Bitmap bitmap = null;
             InputStream inputStream = null;
 
-            try {
+            try
+            {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
@@ -281,7 +305,7 @@ public class DatabaseHandler
 
                 Log.v("getObjectives", "Status = " + status);
 
-                if (status == 200)
+                if (status == HttpURLConnection.HTTP_OK)
                 {
                     // Read the input stream into a String
                     inputStream = urlConnection.getInputStream();
@@ -291,22 +315,31 @@ public class DatabaseHandler
 
                 return bitmap;
             }
-            catch (ProtocolException e) {
+            catch (ProtocolException e)
+            {
                 e.printStackTrace();
             }
-            catch (IOException e) {
+            catch (IOException e)
+            {
                 Log.e("PlaceholderFragment", "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
                 return null;
-            } finally {
-                if (urlConnection != null) {
+            }
+            finally
+            {
+                if (urlConnection != null)
+                {
                     urlConnection.disconnect();
                 }
-                if (reader != null) {
-                    try {
+                if (reader != null)
+                {
+                    try
+                    {
                         reader.close();
-                    } catch (final IOException e) {
+                    }
+                    catch (final IOException e)
+                    {
                         Log.e("PlaceholderFragment", "Error closing stream", e);
                     }
                 }
@@ -321,5 +354,106 @@ public class DatabaseHandler
             super.onPostExecute(bitmap);
         }
 
+    }
+
+    class MyAsyncTaskGetClueById extends AsyncTask<String, String, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTaskGetClueById(String url)
+        {
+            urlProvided = url;
+        }
+
+        @Override
+        protected String doInBackground(String... params)
+        {
+            HttpURLConnection conn;
+
+            try
+            {
+                URL url = new URL(urlProvided);
+
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("id", params[0]);
+
+                Log.v(this.toString(), builder.toString());
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try
+            {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null)
+                    {
+                        result.append(line);
+                    }
+
+                    // Pass data to onPostExecute method
+                    return (result.toString());
+
+                } else
+                {
+
+                    return ("unsuccessful");
+                }
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            super.onPostExecute(s);
+        }
     }
 }

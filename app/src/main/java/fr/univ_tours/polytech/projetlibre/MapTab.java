@@ -132,11 +132,14 @@ public class MapTab extends Fragment
         //}
 
         // We are connected, so we can create of a few circles
-        ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
-
-        for (CircleOptions circleOption : circleOptions)
+        if (mCircles.size() == 0)
         {
-            mCircles.add(mMap.addCircle(circleOption));
+            ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
+
+            for (CircleOptions circleOption : circleOptions)
+            {
+                mCircles.add(mMap.addCircle(circleOption));
+            }
         }
     }
 

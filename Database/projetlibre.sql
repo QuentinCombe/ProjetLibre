@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 23 Février 2017 à 15:46
+-- Généré le :  Ven 24 Février 2017 à 15:21
 -- Version du serveur :  5.7.9
 -- Version de PHP :  5.6.16
 
@@ -44,14 +44,16 @@ CREATE TABLE IF NOT EXISTS `clue` (
   `description` text NOT NULL,
   `image` tinytext NOT NULL,
   PRIMARY KEY (`idClue`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `clue`
 --
 
 INSERT INTO `clue` (`idClue`, `description`, `image`) VALUES
-(1, '', '1');
+(1, '', '1'),
+(2, '', '2'),
+(3, '', '3');
 
 -- --------------------------------------------------------
 
