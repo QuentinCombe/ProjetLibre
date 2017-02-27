@@ -1,4 +1,4 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.database;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,10 +18,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -36,7 +34,7 @@ public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
 
-    private final String ipAdress = "192.168.1.12:8080";
+    private final String ipAdress = "172.25.78.231:8080";
     private String scriptToExecute = null;
 
     private final String baseUrl = "http://" + ipAdress + "/projetlibre/";

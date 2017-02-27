@@ -1,10 +1,9 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -23,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.univ_tours.polytech.projetlibre.R;
 
 public class SignupActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 

@@ -1,4 +1,4 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,8 @@ import com.google.android.gms.tagmanager.Container;
 
 import java.io.IOException;
 
+import fr.univ_tours.polytech.projetlibre.R;
+
 
 public class SettingsTab extends Fragment {
 
@@ -30,10 +32,14 @@ public class SettingsTab extends Fragment {
     View view;
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
 
         view = inflater.inflate(R.layout.fragment_settings,container,false);
+
         updatePicture = (TextView) view.findViewById(R.id.EditProfil);
+
+
         System.out.println(updatePicture.getText());
         validate = (Button) view.findViewById(R.id.validate);
         System.out.println(validate.getText());

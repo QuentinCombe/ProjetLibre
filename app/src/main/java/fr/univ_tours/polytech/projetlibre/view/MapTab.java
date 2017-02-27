@@ -1,40 +1,30 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.view;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.google.android.gms.internal.zzir.runOnUiThread;
+import fr.univ_tours.polytech.projetlibre.controller.MapController;
+import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.controller.MainActivity;
 
 public class MapTab extends Fragment
         implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener

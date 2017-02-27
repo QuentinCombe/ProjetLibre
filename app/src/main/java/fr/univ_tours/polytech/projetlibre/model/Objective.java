@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.univ_tours.polytech.projetlibre.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 
 /**
  * Created by Alkpo on 14/02/2017.
@@ -39,15 +39,15 @@ public class Objective
                 objective.id = objectiveJsonObject.getInt("idObjective");
                 objective.circle =
                         new Circle(objectiveJsonObject.getDouble("latitude"),
-                                   objectiveJsonObject.getDouble("longitude"),
-                                   objectiveJsonObject.getDouble("radius"));
+                                objectiveJsonObject.getDouble("longitude"),
+                                objectiveJsonObject.getDouble("radius"));
 
                 objective.clue = DatabaseHandler.getInstance().getClueFromId(objectiveJsonObject.getInt("idClue"));
 
 
-
                 listObjectives.add(objective);
-            } catch (JSONException e)
+            }
+            catch (JSONException e)
             {
                 e.printStackTrace();
             }
@@ -58,8 +58,7 @@ public class Objective
             System.out.println("Didnt get the objectives properly...");
 
             return null;
-        }
-        else
+        } else
         {
             return listObjectives;
         }

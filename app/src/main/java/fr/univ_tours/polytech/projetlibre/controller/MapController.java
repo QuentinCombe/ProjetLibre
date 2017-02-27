@@ -1,4 +1,4 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.location.Location;
 import android.util.Log;
@@ -8,17 +8,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 
 /**
@@ -36,8 +33,6 @@ public class MapController
     private List<Objective> mListObjectives = null;
 
     private int mIdCircleSelected = -1;
-
-    private GoogleMap.InfoWindowAdapter infoWindow;
 
     private int mCircleColor = 0x750000ff;
 

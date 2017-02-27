@@ -1,17 +1,11 @@
 package fr.univ_tours.polytech.projetlibre.model;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-
-import fr.univ_tours.polytech.projetlibre.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 
 /**
  * Created by Alkpo on 23/02/2017.

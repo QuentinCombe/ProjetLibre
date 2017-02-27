@@ -1,4 +1,4 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import fr.univ_tours.polytech.projetlibre.R;
+
 public class MainActivity extends AppCompatActivity
 {
     private TabLayout tabFooter;
@@ -14,6 +16,8 @@ public class MainActivity extends AppCompatActivity
     private ViewPager viewPager;
 
     private MapController mMapController = new MapController();
+
+    private ProfileController mProfileController = new ProfileController();
 
     public static final int TAB_PROFILE = 0;
     public static final int TAB_MAP = 1;
@@ -89,5 +93,10 @@ public class MainActivity extends AppCompatActivity
     public MapController getmMapController()
     {
         return mMapController;
+    }
+
+    public ProfileController getmProfileController()
+    {
+        return mProfileController;
     }
 }

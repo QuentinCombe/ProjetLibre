@@ -1,8 +1,13 @@
-package fr.univ_tours.polytech.projetlibre;
+package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import fr.univ_tours.polytech.projetlibre.controller.MainActivity;
+import fr.univ_tours.polytech.projetlibre.view.MapTab;
+import fr.univ_tours.polytech.projetlibre.view.ProfileTab;
+import fr.univ_tours.polytech.projetlibre.view.SettingsTab;
 
 /**
  * Created by quent on 11/02/2017.
