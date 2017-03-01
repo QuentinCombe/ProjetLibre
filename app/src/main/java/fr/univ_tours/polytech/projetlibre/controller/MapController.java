@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -17,6 +18,7 @@ import java.util.List;
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
+import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
 /**
  * Created by Alkpo on 14/02/2017.
@@ -31,6 +33,8 @@ public class MapController
 
     private ArrayList<CircleOptions> mCircles = new ArrayList<>();
     private List<Objective> mListObjectives = null;
+
+    private MapTab mMapTab = null;
 
     private int mIdCircleSelected = -1;
 
@@ -57,40 +61,17 @@ public class MapController
         }
         else
         {
-            Log.v(getClass().toString(), "Cant reach database, add dummy circles");
 
-            CircleOptions circleOptions = new CircleOptions()
-                    .center(new LatLng(47.3945427, 0.6910287000000608))
-                    .radius(100)
-                    .strokeWidth(0.0f)
-                    .fillColor(mCircleColor);
-
-            mCircles.add(circleOptions);
-
-            circleOptions = new CircleOptions()
-                    .center(new LatLng(47.365197, 0.680741))
-                    .radius(100)
-                    .strokeWidth(0.0f)
-                    .fillColor(mCircleColor);
-
-            mCircles.add(circleOptions);
-
-            circleOptions = new CircleOptions()
-                    .center(new LatLng(47.367671, 0.684174))
-                    .radius(100)
-                    .strokeWidth(0.0f)
-                    .fillColor(mCircleColor);
-
-            mCircles.add(circleOptions);
         }
 
         return mCircles;
 
     }
 
-    public void setRootView(View rootView)
+    public void setParameters(MapTab mapTab, View rootView)
     {
         mRootView = rootView;
+        mMapTab = mapTab;
 
         objectiveInfoLayout = (LinearLayout) mRootView.findViewById(R.id.objectiveInfoLayout);
         mClueImageView = (ImageView) mRootView.findViewById(R.id.clueImageView);
@@ -173,4 +154,10 @@ public class MapController
         mClueImageView.setVisibility(View.VISIBLE);
     }
 
+    public void tryToReload()
+    {
+        mMapTab.zoomOnCurrentLocation();
+
+        mMapTab.tryToGetCircles();
+    }
 }
