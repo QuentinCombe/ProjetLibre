@@ -154,6 +154,11 @@ public class MapTab extends Fragment
         }
     }
 
+    public void openCameraMode(View v)
+    {
+        mMapController.openCameraMode();
+    }
+
     public void showClue(View view)
     {
         mMapController.showClue();
