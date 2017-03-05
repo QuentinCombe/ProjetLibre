@@ -14,6 +14,11 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +46,7 @@ public class MapController implements View.OnClickListener
     private int mIdCircleSelected = -1;
 
     private int mCircleColor = 0x750000ff;
+
 
     public void MapController()
     {
@@ -97,6 +103,9 @@ public class MapController implements View.OnClickListener
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
 
+        Button checkObjectiveButton = (Button) mRootView.findViewById(R.id.checkObjective);
+        checkObjectiveButton.setOnClickListener(this);
+
     }
 
     public int getIdCircleClicked(LatLng position)
@@ -151,6 +160,11 @@ public class MapController implements View.OnClickListener
 
     public void openCameraMode()
     {
+        Intent intent = new Intent(mMapTab.getContext(), fr.univ_tours.polytech.projetlibre.unity.UnityPlayerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        //intent.addFlags(Intent.FLAG)
+
+        mMapTab.startActivityForResult(intent, 0);
 
     }
 
@@ -171,15 +185,59 @@ public class MapController implements View.OnClickListener
         mMapTab.tryToGetCircles();
     }
 
+    public void checkIfAnObjectiveWasFound()
+    {
+        // Try to open the file
+        if (mMapTab != null)
+        {
+            File file = new File(mMapTab.getContext().getExternalFilesDir(null), "obj.txt");
+            String contentFile = null;
+
+            if (!file.exists())
+            {
+                Log.v(toString(), "Nothing found !");
+            } else
+            {
+                try
+                {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    contentFile = br.readLine();
+                }
+                catch (FileNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+
+            System.out.println(file.toString());
+
+            if (contentFile != null)
+            {
+                Log.v(toString(), "Contenu = " + contentFile);
+
+                showClue();
+            }
+        }
+    }
+
     @Override
     public void onClick(View v)
     {
         if (v.getId() == R.id.openCameraModeButton)
         {
-            Intent intent = new Intent(mMapTab.getContext(), fr.univ_tours.polytech.projetlibre.unity.UnityPlayerActivity.class);
+            Intent intent = new Intent(mMapTab.getContext(), fr.univ_tours.polytech.projetlibre.unity.MyUnityPlayerActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-            mMapTab.startActivity(intent);
+            mMapTab.startActivityForResult(intent, 0);
+        }
+        else if (v.getId() == R.id.checkObjective)
+        {
+            checkIfAnObjectiveWasFound();
         }
     }
 }

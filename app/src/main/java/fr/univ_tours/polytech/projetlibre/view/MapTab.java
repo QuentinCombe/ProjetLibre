@@ -1,5 +1,6 @@
 package fr.univ_tours.polytech.projetlibre.view;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -164,6 +165,15 @@ public class MapTab extends Fragment
         mMapController.showClue();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        mMapController.checkIfAnObjectiveWasFound();
+
+    }
+
     public void onStart()
     {
         mGoogleApiClient.connect();
@@ -177,6 +187,8 @@ public class MapTab extends Fragment
 
         super.onStop();
     }
+
+
 
 
 

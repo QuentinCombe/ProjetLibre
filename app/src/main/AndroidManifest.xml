@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGER" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -25,10 +28,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBdfLj-OLstwsvOf8mosSwL7WJHJhLqV9I" />
 
-        <activity android:label="@string/app_name" android:screenOrientation="portrait" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale" android:name="fr.univ_tours.polytech.projetlibre.unity.UnityPlayerActivity">
+        <activity
+                  android:screenOrientation="portrait"
+                  android:launchMode="singleTask"
+
+                  android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale" android:name="fr.univ_tours.polytech.projetlibre.unity.UnityPlayerActivity">
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
             <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="false" />
         </activity>
+        <activity android:name=".unity.MyUnityPlayerActivity"
+                  android:process=":unityActivity"></activity>
         <activity
             android:name=".controller.MainActivity"
             android:screenOrientation="portrait">
