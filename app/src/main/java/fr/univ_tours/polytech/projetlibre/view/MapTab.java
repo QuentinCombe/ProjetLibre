@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,7 +53,7 @@ public class MapTab extends Fragment
         mRootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapController = mainActivity.getmMapController();
-        mMapController.setRootView(mRootView);
+        mMapController.setParameters(this, mRootView);
 
         // In MapController.java ??
         MapView mapView = (MapView) mRootView.findViewById(R.id.mapView);
@@ -91,44 +92,43 @@ public class MapTab extends Fragment
     @Override
     public void onConnected(Bundle bundle)
     {
-        /*runOnUiThread(new Runnable() {
-            @Override
-            public void run()
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        zoomOnCurrentLocation();
 
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                        mGoogleApiClient);
+        tryToGetCircles();
 
-                if (mLastLocation != null)
-                {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
-                }
+    }
 
-
-            }
-        });*/
-
+    public void zoomOnCurrentLocation()
+    {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
-        //if (mLastLocation != null)
-        //{
+        if (mLastLocation != null)
+        {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
-        //}
+        }
+        else
+        {
+            Toast.makeText(this.getContext(), "Can't find your location...", Toast.LENGTH_LONG).show();
+        }
+    }
 
-        // We are connected, so we can create of a few circles
+    public void tryToGetCircles()
+    {
         if (mCircles.size() == 0)
         {
             ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
 
-            for (CircleOptions circleOption : circleOptions)
+            if (circleOptions.size() > 0)
             {
-                mCircles.add(mMap.addCircle(circleOption));
+                for (CircleOptions circleOption : circleOptions)
+                {
+                    mCircles.add(mMap.addCircle(circleOption));
+                }
+            }
+            else
+            {
+                Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -152,6 +152,11 @@ public class MapTab extends Fragment
 
             mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
         }
+    }
+
+    public void openCameraMode(View v)
+    {
+        mMapController.openCameraMode();
     }
 
     public void showClue(View view)

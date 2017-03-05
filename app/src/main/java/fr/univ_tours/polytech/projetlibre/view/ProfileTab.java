@@ -26,6 +26,10 @@ public class ProfileTab extends Fragment
         mProfileController = mainActivity.getmProfileController();
 
         mProfileController.setRootView(rootView);
+<<<<<<< HEAD
+=======
+
+>>>>>>> c6cfdc7674bffb9177d6b05aa53d1ad566548d29
         return rootView;
     }
 }

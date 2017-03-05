@@ -34,7 +34,11 @@ public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
 
+<<<<<<< HEAD
     private final String ipAdress = "172.25.77.26:8080";
+=======
+    private final String ipAdress = "192.168.1.12:8080";
+>>>>>>> c6cfdc7674bffb9177d6b05aa53d1ad566548d29
     private String scriptToExecute = null;
 
     private final String baseUrl = "http://" + ipAdress + "/projetlibre/";

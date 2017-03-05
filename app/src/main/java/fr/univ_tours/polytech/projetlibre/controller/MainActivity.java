@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity
                 if (tab.getPosition() != TAB_MAP)
                 {
                     mMapController.clearMapView();
+                }
+                else if (tab.getPosition() == TAB_MAP)
+                {
+                    mMapController.tryToReload();
+
                 }
             }
 
