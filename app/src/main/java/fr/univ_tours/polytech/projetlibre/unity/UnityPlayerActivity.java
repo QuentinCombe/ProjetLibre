@@ -2,14 +2,18 @@ package fr.univ_tours.polytech.projetlibre.unity;
 
 import com.unity3d.player.*;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import fr.univ_tours.polytech.projetlibre.controller.MainActivity;
 
 public class UnityPlayerActivity extends Activity
 {
@@ -31,8 +35,12 @@ public class UnityPlayerActivity extends Activity
 	// Quit Unity
 	@Override protected void onDestroy ()
 	{
+		Log.v(toString(), "ONDESTROYYYY");
+
 		mUnityPlayer.quit();
 		super.onDestroy();
+
+
 	}
 
 	// Pause Unity

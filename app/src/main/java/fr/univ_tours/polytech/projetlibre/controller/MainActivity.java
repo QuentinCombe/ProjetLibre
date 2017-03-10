@@ -1,5 +1,6 @@
 package fr.univ_tours.polytech.projetlibre.controller;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.v(toString(), "On create");
+
         mMapController = new MapController();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity
 
         // Adding the adapter to the page
         viewPager.setAdapter(adapter);
+
+
 
 
 
@@ -85,6 +90,23 @@ public class MainActivity extends AppCompatActivity
         });
 
 
+        Intent intent = getIntent();
+
+        // That means we are coming from the Camera/Unity Project
+        if (intent != null)
+        {
+            int tab = intent.getIntExtra("tab", -1);
+
+            if (tab != -1)
+            {
+                viewPager.setCurrentItem(tab);
+            }
+            else if (tab == TAB_MAP)
+            {
+                mMapController.checkIfAnObjectiveWasFound();
+            }
+
+        }
     }
 
     public void setupTabLayout(TabLayout tabLayout) {

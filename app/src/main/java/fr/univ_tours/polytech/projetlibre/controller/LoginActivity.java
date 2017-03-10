@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.model.User;
 
 
 /**
@@ -56,6 +59,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private User user = new User();
+
+
+    public boolean checkUser(String mail, String password){
+        Log.d(toString(),"CheckUser");
+        user = DatabaseHandler.getInstance().getUserFromId(mail, password);
+        if(user != null){
+            if(user.mail.equals(mail)){
+                if (user.password.equals(password))
+                {
+                    Log.d(toString(),"ICI");
+                    return true;
+                }
+                else{
+                    Log.d(toString(), "Password False");
+                    return false;
+                }
+            }
+            else{
+                Log.d(toString(), "mail False");
+                return false;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,23 +310,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            // Simulate network access.
+            Log.d(toString(),"Call CheckUser");
+            if( checkUser(mEmail,mPassword) == true){
+                return true;
+            }
+            else{
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
+           /* for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
             // TODO: register the new account here.
-            return true;
+            //return true;
         }
 
         @Override

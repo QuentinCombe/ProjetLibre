@@ -14,6 +14,9 @@ public class ProfileController
 {
     private View mRootView;
 
+    /*Affecter les valeur au component de la vue
+    Tout ce ue j'ai fait dans la vue
+     *  */
     public void setRootView(View rootView)
     {
         mRootView = rootView;
