@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,11 +28,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.model.User;
 
 
 /**
@@ -56,6 +61,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private User user = new User();
+
+
+    public String checkUser(String mail, String password){
+
+        user = DatabaseHandler.getInstance().getUserFromId(mail, password);
+        if(user != null){
+            if(user.mail.equals(mail)){
+                if (user.password.equals(password))
+                {
+                    Log.d(toString(),"Valide");
+                    return "Valide";
+                }
+                else{
+                    Log.d(toString(), "Password False");
+                    return "Failed pass";
+                }
+            }
+            else{
+                Log.d(toString(), "mail False");
+                return "Failed mail";
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,8 +184,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            if(checkUser(email,password)=="Valide")
+            {
+                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Log.d(toString(),"USER : "+ user);
+                myIntent.putExtra("user", user);
+                startActivity(myIntent);
+            }
+            else{
+                showProgress(false);
+                if(checkUser(email,password)=="Failed mail"){
+                    mEmailView.setError(getString(R.string.error_incorrect_password));
+                    mEmailView.requestFocus();
+                }
+                else if(checkUser(email,password)=="Failed pass"){
+                    mPasswordView.setError(getString(R.string.error_incorrect_mail));
+                    mPasswordView.requestFocus();
+                }
+                Toast.makeText(getApplicationContext(), "Failed to login",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -164,13 +212,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        if(password.length()>8)
+        /*if(password.length()>8)
             if((password.contains("1"))||(password.contains("2"))||(password.contains("3"))||(password.contains("4"))||
                     (password.contains("5"))||(password.contains("6"))||(password.contains("7"))||(password.contains("8")
             )||(password.contains("9"))){
                 return true;
             }
-        return false;
+        return false;*/
+
+        return true;
     }
 
     /**
@@ -234,7 +284,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
         addEmailsToAutoComplete(emails);
     }
 
@@ -281,20 +330,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            // Simulate network access.
 
-            for (String credential : DUMMY_CREDENTIALS) {
+
+           /* for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
             // TODO: register the new account here.
             return true;
