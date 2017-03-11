@@ -9,29 +9,19 @@
         android:layout_height="match_parent"/>
 
 
-
-
     <LinearLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:id="@+id/objectiveInfoLayout"
         android:layout_gravity="center_horizontal|bottom"
         android:visibility="invisible"
         android:orientation="horizontal"
-        android:background="@android:color/darker_gray"
         android:padding="2dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/idCircleTextView"
-                android:text="Bouton 1"
-                android:padding="16dp" />
-
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/showClueButton"
+                android:layout_gravity="center_horizontal"
                 android:text="Show Clue"
                 android:padding="16dp" />
 
@@ -39,15 +29,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Camera"
+                android:layout_gravity="center_horizontal"
                 android:id="@+id/openCameraModeButton"
                 android:padding="16dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CHECK"
-            android:id="@+id/checkObjective"
-            android:padding="16dp"/>
 
     </LinearLayout>
 

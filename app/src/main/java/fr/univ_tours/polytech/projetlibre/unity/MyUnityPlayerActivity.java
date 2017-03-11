@@ -22,7 +22,7 @@ public class MyUnityPlayerActivity extends UnityPlayerActivity
     public void onBackPressed()
     {
         Intent intent = new Intent();
-        intent.putExtra("tab", MainActivity.TAB_MAP);
+        intent.putExtra("fromObjective", 1);
         setResult(0, intent);
 
         finish();

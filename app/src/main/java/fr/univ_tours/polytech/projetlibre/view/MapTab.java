@@ -107,8 +107,7 @@ public class MapTab extends Fragment
         if (mLastLocation != null)
         {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
-        }
-        else
+        } else
         {
             Toast.makeText(this.getContext(), "Can't find your location...", Toast.LENGTH_LONG).show();
         }
@@ -126,8 +125,7 @@ public class MapTab extends Fragment
                 {
                     mCircles.add(mMap.addCircle(circleOption));
                 }
-            }
-            else
+            } else
             {
                 Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
             }
@@ -171,7 +169,6 @@ public class MapTab extends Fragment
         super.onActivityResult(requestCode, resultCode, intent);
 
         mMapController.checkIfAnObjectiveWasFound();
-
     }
 
     public void onStart()
@@ -187,9 +184,6 @@ public class MapTab extends Fragment
 
         super.onStop();
     }
-
-
-
 
 
     @Override

@@ -35,10 +35,6 @@ public class MainActivity extends AppCompatActivity
 
         mMapController = new MapController();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setLogo(R.drawable.search);
-        setSupportActionBar(toolbar);
-
         //Initializing the tabLayout
         tabFooter = (TabLayout) findViewById(R.id.footer);
         setupTabLayout(tabFooter);
@@ -51,16 +47,12 @@ public class MainActivity extends AppCompatActivity
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabFooter.getTabCount());
 
 
-
         // Adding the adapter to the page
         viewPager.setAdapter(adapter);
 
-
-
-
-
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabFooter));
-        tabFooter.addOnTabSelectedListener (new TabLayout.OnTabSelectedListener() {
+        tabFooter.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+        {
             @Override
             public void onTabSelected(TabLayout.Tab tab)
             {
@@ -74,42 +66,25 @@ public class MainActivity extends AppCompatActivity
                 else if (tab.getPosition() == TAB_MAP)
                 {
                     mMapController.tryToReload();
-
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onTabUnselected(TabLayout.Tab tab)
+            {
 
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onTabReselected(TabLayout.Tab tab)
+            {
 
             }
         });
-
-
-        Intent intent = getIntent();
-
-        // That means we are coming from the Camera/Unity Project
-        if (intent != null)
-        {
-            int tab = intent.getIntExtra("tab", -1);
-
-            if (tab != -1)
-            {
-                viewPager.setCurrentItem(tab);
-            }
-            else if (tab == TAB_MAP)
-            {
-                mMapController.checkIfAnObjectiveWasFound();
-            }
-
-        }
     }
 
-    public void setupTabLayout(TabLayout tabLayout) {
+    public void setupTabLayout(TabLayout tabLayout)
+    {
 //        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         //tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.getTabAt(TAB_PROFILE).setIcon(R.drawable.user);

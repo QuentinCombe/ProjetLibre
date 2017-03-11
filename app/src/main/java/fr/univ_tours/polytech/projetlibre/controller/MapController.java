@@ -2,7 +2,6 @@ package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.content.Intent;
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,8 +65,7 @@ public class MapController implements View.OnClickListener
                 circleOptions.strokeWidth(0.0f).fillColor(mCircleColor);
                 mCircles.add(circleOptions);
             }
-        }
-        else
+        } else
         {
 
         }
@@ -86,26 +84,27 @@ public class MapController implements View.OnClickListener
 
         Button showClueButton = (Button) mRootView.findViewById(R.id.showClueButton);
 
-        showClueButton.setOnClickListener(new View.OnClickListener() {
+        showClueButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 showClue();
             }
         });
 
-        mClueImageView.setOnClickListener(new View.OnClickListener() {
+        mClueImageView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mClueImageView.setVisibility(View.INVISIBLE);
             }
         });
 
+
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
-
-        Button checkObjectiveButton = (Button) mRootView.findViewById(R.id.checkObjective);
-        checkObjectiveButton.setOnClickListener(this);
-
     }
 
     public int getIdCircleClicked(LatLng position)
@@ -138,14 +137,10 @@ public class MapController implements View.OnClickListener
 
             objectiveInfoLayout.setVisibility(View.VISIBLE);
 
-            TextView textView = (TextView) objectiveInfoLayout.findViewById(R.id.idCircleTextView);
-            textView.setText("Cercle " + mIdCircleSelected);
-
             Log.v(getClass().toString(), "IdObjective = " + objective.id);
 
             mClueImageView.setImageBitmap(objective.clue.image);
-        }
-        else
+        } else
         {
             if (objectiveInfoLayout.getVisibility() == View.VISIBLE)
             {
@@ -195,7 +190,7 @@ public class MapController implements View.OnClickListener
 
             if (!file.exists())
             {
-                Log.v(toString(), "Nothing found !");
+                Toast.makeText(mMapTab.getContext(), "Aucun objectif trouve", Toast.LENGTH_LONG).show();
             } else
             {
                 try
@@ -220,7 +215,11 @@ public class MapController implements View.OnClickListener
             {
                 Log.v(toString(), "Contenu = " + contentFile);
 
-                showClue();
+                Toast.makeText(mMapTab.getContext(), "Vous avez trouve le num " + contentFile, Toast.LENGTH_LONG).show();
+
+                //TODO Remove the file
+                boolean d0 = file.delete();
+                Log.w("Delete Check", "File deleted: " + d0);
             }
         }
     }
@@ -234,10 +233,6 @@ public class MapController implements View.OnClickListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
             mMapTab.startActivityForResult(intent, 0);
-        }
-        else if (v.getId() == R.id.checkObjective)
-        {
-            checkIfAnObjectiveWasFound();
         }
     }
 }
