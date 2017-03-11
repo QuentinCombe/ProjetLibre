@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 import fr.univ_tours.polytech.projetlibre.model.Clue;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
+import fr.univ_tours.polytech.projetlibre.model.User;
 
 /**
  * Created by Alkpo on 21/02/2017.
@@ -33,8 +34,8 @@ import fr.univ_tours.polytech.projetlibre.model.Objective;
 public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
-
-    private final String ipAdress = "192.168.0.18:8080";
+	
+    private final String ipAdress = "192.168.1.12:8080";
     private String scriptToExecute = null;
 
     private final String baseUrl = "http://" + ipAdress + "/projetlibre/";
@@ -127,6 +128,7 @@ public class DatabaseHandler
 
         return listObjectives;
     }
+
 
     class MyAsyncTaskGetString extends AsyncTask<Void, Void, String>
     {
@@ -261,6 +263,7 @@ public class DatabaseHandler
         return bitmap;
 
     }
+
 
     class MyAsyncTaskGetBitmap extends AsyncTask<Void, Void, Bitmap>
     {
@@ -454,4 +457,140 @@ public class DatabaseHandler
             super.onPostExecute(s);
         }
     }
+
+    public User getUserFromId(String mail, String password){
+        User user = null;
+        scriptToExecute = "selectUserFromIdentifier.php";
+
+        MyAsyncTaskGetUserFromIdentifier getUserFromIdentifierAsyncTask = new MyAsyncTaskGetUserFromIdentifier(baseUrl + scriptToExecute);
+        Log.d(toString(),mail+"\n"+password);
+        getUserFromIdentifierAsyncTask.execute(mail,password);
+
+        String result = null;
+        try
+        {
+            result = getUserFromIdentifierAsyncTask.get();
+
+            Log.v(toString(), result);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+        if (result != null)
+        {
+            try
+            {
+                user = User.convertFromJsonObject(new JSONObject(result));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return user;
+    }
+    class MyAsyncTaskGetUserFromIdentifier extends AsyncTask<String, String, String> {
+
+        String urlProvided = null;
+
+        public MyAsyncTaskGetUserFromIdentifier(String url)
+        {
+            Log.d(toString(),"HERE");
+            urlProvided = url;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+            Log.d(toString(),"HERE In myAsynchTask");
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection conn;
+            Log.d(toString(),"param : \n"+params[0]+"\n"+params[1]);
+            try
+            {
+
+                URL url = new URL(urlProvided);
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("mail", params[0])
+                        .appendQueryParameter("password",params[1]);
+
+                Log.v(this.toString(), builder.toString());
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+            try
+            {
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null)
+                    {
+                        result.append(line);
+                    }
+                    // Pass data to onPostExecute method
+                    Log.d(toString(),"Result :"+result.toString());
+                    return (result.toString());
+                } else
+                {
+                    return ("unsuccessful");
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String s)
+        {
+            Log.d(toString(),"RECIEVED : "+s);
+            super.onPostExecute(s);
+        }
+    }
+
 }

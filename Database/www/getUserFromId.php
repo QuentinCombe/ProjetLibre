@@ -9,6 +9,7 @@
 		if (isset($_POST['id']))
 		{	
 			$myId = (int) $_POST['id'];
+			 
 			$sql = 'SELECT idUser, username, mail, password FROM user WHERE idUser = ?';
 			
 			$stmt = $bdd->prepare($sql);

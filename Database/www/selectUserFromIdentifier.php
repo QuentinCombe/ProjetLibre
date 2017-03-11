@@ -6,13 +6,16 @@
         $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         $bdd = new PDO('mysql:host=localhost;dbname=projetlibre', 'root', '', $pdo_options);
 
-		if (isset($_POST['id']))
+		if (isset(($_POST['mail']) && isset($_POST['password'])))
 		{	
-			$myId = (int) $_POST['id'];
-			$sql = 'SELECT idUser, username, mail, password FROM user WHERE idUser = ?';
+			$myMail = (string) $_POST['mail'];
+			$myPassword = (string) $_POST['password'];
+			 
+			$sql = 'SELECT * FROM user WHERE mail = ? and password = ?';
 			
 			$stmt = $bdd->prepare($sql);
-			$stmt->bindParam(1, $myId, PDO::PARAM_INT);
+			$stmt->bindParam(1, $myMail, PDO::PARAM_STRING);
+			$stmt->bindParam(2, $myPassword, PDO::PARAM_STRING);
 			$stmt->execute();
 			
 			$output = $stmt->fetch();
