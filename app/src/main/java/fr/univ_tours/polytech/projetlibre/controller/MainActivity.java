@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.model.User;
 import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
 public class MainActivity extends AppCompatActivity
@@ -19,7 +20,8 @@ public class MainActivity extends AppCompatActivity
 
     private MapController mMapController = new MapController();
 
-    private ProfileController mProfileController = new ProfileController();
+    private ProfileController mProfileController = null;
+    private SettingsController mSettingsController = null;
 
     public static final int TAB_PROFILE = 0;
     public static final int TAB_MAP = 1;
@@ -34,6 +36,9 @@ public class MainActivity extends AppCompatActivity
         Log.v(toString(), "On create");
 
         mMapController = new MapController();
+        User userRecieved = (User)getIntent().getSerializableExtra("user");
+        mProfileController = new ProfileController(userRecieved);
+        mSettingsController = new SettingsController(userRecieved);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        toolbar.setLogo(R.drawable.search);
@@ -126,5 +131,9 @@ public class MainActivity extends AppCompatActivity
     public ProfileController getmProfileController()
     {
         return mProfileController;
+    }
+    public SettingsController getmSettingsController()
+    {
+        return mSettingsController;
     }
 }

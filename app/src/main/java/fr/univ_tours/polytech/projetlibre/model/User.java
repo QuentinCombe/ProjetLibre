@@ -5,13 +5,15 @@ import android.graphics.Bitmap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 
 /**
  * Created by quent on 06/03/2017.
  */
 
-public class User {
+public class User implements Serializable {
 
     public int idUser;
     public String username;

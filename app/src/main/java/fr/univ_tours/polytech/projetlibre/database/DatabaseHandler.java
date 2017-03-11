@@ -461,8 +461,7 @@ public class DatabaseHandler
 
     public User getUserFromId(String mail, String password){
         User user = null;
-        Log.d(toString(),"GetUserFromID");
-        scriptToExecute = "getUserFromIdentifier.php";
+        scriptToExecute = "selectUserFromIdentifier.php";
 
         MyAsyncTaskGetUserFromIdentifier getUserFromIdentifierAsyncTask = new MyAsyncTaskGetUserFromIdentifier(baseUrl + scriptToExecute);
         Log.d(toString(),mail+"\n"+password);
@@ -472,7 +471,6 @@ public class DatabaseHandler
         try
         {
             result = getUserFromIdentifierAsyncTask.get();
-            Log.d(toString(),result);
         }
         catch (InterruptedException e)
         {
@@ -482,7 +480,6 @@ public class DatabaseHandler
         {
             e.printStackTrace();
         }
-
         if (result != null)
         {
             try
@@ -494,7 +491,6 @@ public class DatabaseHandler
                 e.printStackTrace();
             }
         }
-
         return user;
     }
     class MyAsyncTaskGetUserFromIdentifier extends AsyncTask<String, String, String> {

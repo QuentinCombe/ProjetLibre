@@ -28,7 +28,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,27 +65,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private User user = new User();
 
 
-    public boolean checkUser(String mail, String password){
-        Log.d(toString(),"CheckUser");
+    public String checkUser(String mail, String password){
+
         user = DatabaseHandler.getInstance().getUserFromId(mail, password);
         if(user != null){
             if(user.mail.equals(mail)){
                 if (user.password.equals(password))
                 {
-                    Log.d(toString(),"ICI");
-                    return true;
+                    Log.d(toString(),"Valide");
+                    return "Valide";
                 }
                 else{
                     Log.d(toString(), "Password False");
-                    return false;
+                    return "Failed pass";
                 }
             }
             else{
                 Log.d(toString(), "mail False");
-                return false;
+                return "Failed mail";
             }
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -182,8 +184,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            if(checkUser(email,password)=="Valide")
+            {
+                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Log.d(toString(),"USER : "+ user);
+                myIntent.putExtra("user", user);
+                startActivity(myIntent);
+            }
+            else{
+                showProgress(false);
+                if(checkUser(email,password)=="Failed mail"){
+                    mEmailView.setError(getString(R.string.error_incorrect_password));
+                    mEmailView.requestFocus();
+                }
+                else if(checkUser(email,password)=="Failed pass"){
+                    mPasswordView.setError(getString(R.string.error_incorrect_mail));
+                    mPasswordView.requestFocus();
+                }
+                Toast.makeText(getApplicationContext(), "Failed to login",Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -263,7 +282,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
         addEmailsToAutoComplete(emails);
     }
 
@@ -311,13 +329,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             // Simulate network access.
-            Log.d(toString(),"Call CheckUser");
-            if( checkUser(mEmail,mPassword) == true){
-                return true;
-            }
-            else{
-                return false;
-            }
+
 
            /* for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
@@ -328,7 +340,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }*/
 
             // TODO: register the new account here.
-            //return true;
+            return true;
         }
 
         @Override
