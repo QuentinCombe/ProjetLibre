@@ -1,5 +1,7 @@
 package fr.univ_tours.polytech.projetlibre.model;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -7,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
  * Created by Alkpo on 14/02/2017.
  */
 
-public class Objective
+public class Objective implements Serializable
 {
     public int id;
     public int difficulty;
@@ -35,6 +38,9 @@ public class Objective
             try
             {
                 JSONObject objectiveJsonObject = array.getJSONObject(i);
+
+                Log.v("convertFromJsonArray", objectiveJsonObject.toString());
+                Log.v("convertFromJsonArray", "Le clue quon veut est " + objectiveJsonObject.getInt("idClue"));
 
                 objective.id = objectiveJsonObject.getInt("idObjective");
                 objective.circle =
@@ -64,6 +70,29 @@ public class Objective
         }
     }
 
+    public static ArrayList<Objective>  convertListAchievedObjectivesFromJSONArray(JSONArray array)
+    {
+        ArrayList<Objective> listObjectives = new ArrayList<>();
+
+        for (int i = 0; i < array.length(); i++)
+        {
+            try
+            {
+                JSONObject objectiveJsonObject = array.getJSONObject(i);
+
+                int idObjective = objectiveJsonObject.getInt("idObjective");
+
+                listObjectives.add(GlobalDatas.getInstance().getObjectiveById(idObjective));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+       return listObjectives;
+    }
+
     public static CircleOptions convertToCircleOptions(Objective objective)
     {
         Circle circle = objective.circle;
@@ -73,19 +102,6 @@ public class Objective
                 .radius(circle.getRadius());
 
         return circleOptions;
-    }
-
-    public static Objective findObjectiveById(List<Objective> listObjectives, int idObjective)
-    {
-        for (int i = 0; i < listObjectives.size(); i++)
-        {
-            if (listObjectives.get(i).id == idObjective)
-            {
-                return listObjectives.get(i);
-            }
-        }
-
-        return null;
     }
 
 }

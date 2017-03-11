@@ -23,10 +23,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fr.univ_tours.polytech.projetlibre.controller.MapController;
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.controller.MainActivity;
+import fr.univ_tours.polytech.projetlibre.model.Objective;
 
 public class MapTab extends Fragment
         implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
@@ -40,7 +42,7 @@ public class MapTab extends Fragment
 
     private MapController mMapController = null;
 
-    private ArrayList<Circle> mCircles = new ArrayList<>();
+    private HashMap<Objective, Circle> mCircles = new HashMap<>();
     private Circle mCircledSelected = null;
 
 
@@ -117,6 +119,29 @@ public class MapTab extends Fragment
     {
         if (mCircles.size() == 0)
         {
+            HashMap<Objective, CircleOptions> allCircles = mMapController.constructCircles();
+
+            if (allCircles.size() > 0)
+            {
+                for (Objective objective : allCircles.keySet())
+                {
+                    mCircles.put(objective, mMap.addCircle(allCircles.get(objective)));
+
+                    //mCircles.add(mMap.addCircle(circleOption));
+                }
+            } else
+            {
+                Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void updateCircle(Objective objective)
+    {
+        mCircles.get(objective).setFillColor(0xff000000);
+
+        /*if (mCircles.size() == 0)
+        {
             ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
 
             if (circleOptions.size() > 0)
@@ -129,7 +154,7 @@ public class MapTab extends Fragment
             {
                 Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
             }
-        }
+        }*/
     }
 
     @Override

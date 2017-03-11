@@ -36,6 +36,7 @@ import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 
@@ -92,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -188,7 +190,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             {
                 Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
                 Log.d(toString(),"USER : "+ user);
-                myIntent.putExtra("user", user);
+                myIntent.putExtra("userMail", user.mail);
+                myIntent.putExtra("userPassword", user.password);
                 startActivity(myIntent);
             }
             else{

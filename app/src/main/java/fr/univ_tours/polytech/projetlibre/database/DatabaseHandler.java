@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -70,6 +71,8 @@ public class DatabaseHandler
             e.printStackTrace();
         }
 
+
+
         if (result != null)
         {
             try
@@ -114,6 +117,8 @@ public class DatabaseHandler
             e.printStackTrace();
         }
 
+        Log.v(toString(), "Resultat = " + result);
+
         if (result != null)
         {
             try
@@ -128,6 +133,8 @@ public class DatabaseHandler
 
         return listObjectives;
     }
+
+
 
 
     class MyAsyncTaskGetString extends AsyncTask<Void, Void, String>
@@ -148,9 +155,6 @@ public class DatabaseHandler
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            String result = null;
-            InputStream inputStream;
-
             try
             {
                 URL url = new URL(urlProvided);
@@ -166,35 +170,24 @@ public class DatabaseHandler
 
                 if (status == HttpURLConnection.HTTP_OK)
                 {
-                    // Read the input stream into a String
-                    inputStream = urlConnection.getInputStream();
-                    StringBuffer buffer = new StringBuffer();
-                    if (inputStream == null)
-                    {
-                        // Nothing to do.
-                        return null;
-                    }
-
-                    reader = new BufferedReader(new InputStreamReader(inputStream));
-
+                    InputStream input = urlConnection.getInputStream();
+                    reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
                     String line;
+
                     while ((line = reader.readLine()) != null)
                     {
-                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                        // But it does make debugging a *lot* easier if you print out the completed
-                        // buffer for debugging.
-                        buffer.append(line + "\n");
+                        result.append(line);
                     }
 
-                    if (buffer.length() == 0)
-                    {
-                        // Stream was empty.  No point in parsing.
-                        return null;
-                    }
-                    result = buffer.toString();
+                    // Pass data to onPostExecute method
+                    return (result.toString());
+
+
+
                 }
 
-                return result;
+                return null;
             }
             catch (ProtocolException e)
             {
@@ -494,6 +487,10 @@ public class DatabaseHandler
         }
         return user;
     }
+
+
+
+
     class MyAsyncTaskGetUserFromIdentifier extends AsyncTask<String, String, String> {
 
         String urlProvided = null;
@@ -589,6 +586,262 @@ public class DatabaseHandler
         protected void onPostExecute(String s)
         {
             Log.d(toString(),"RECIEVED : "+s);
+            super.onPostExecute(s);
+        }
+    }
+
+
+    public void insertAchievedObjective(int idUser, int idObjective)
+    {
+        scriptToExecute = "insertAchievedObjective.php";
+
+        MyAsyncTaskInsertIntoAchievedObjectives insertIntoAchievedObjectivesAsynTask = new MyAsyncTaskInsertIntoAchievedObjectives(baseUrl + scriptToExecute);
+        insertIntoAchievedObjectivesAsynTask.execute(idUser, idObjective);
+
+        Log.v(toString(), "Is everything OKAY with inset into achived ?");
+
+        try
+        {
+            Log.v(toString(), insertIntoAchievedObjectivesAsynTask.get());
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    class MyAsyncTaskInsertIntoAchievedObjectives extends AsyncTask<Integer, Void, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTaskInsertIntoAchievedObjectives(String url)
+        {
+            urlProvided = url;
+        }
+
+        @Override
+        protected String doInBackground(Integer... params)
+        {
+            HttpURLConnection conn;
+
+            try
+            {
+                URL url = new URL(urlProvided);
+
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("idUser", String.valueOf(params[0]))
+                        .appendQueryParameter("idObjective", String.valueOf(params[1]));
+
+                Log.v(this.toString(), "Contenu de la query = " + builder.toString());
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try
+            {
+
+                int response_code = conn.getResponseCode();
+
+                Log.v(toString(), "Reponse = " + response_code);
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+
+                    return "success";
+
+                }
+                else
+                {
+
+                    return ("unsuccessful");
+                }
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            super.onPostExecute(s);
+        }
+    }
+
+    public ArrayList<Objective> getAchievedObjectivesById(int idUser)
+    {
+        ArrayList<Objective> achievedObjectives = null;
+
+        scriptToExecute = "getAchievedObjectivesById.php";
+
+        MyAsyncTaskGetAchievedObjectives getAchievedObjectivesAsyncTask = new MyAsyncTaskGetAchievedObjectives(baseUrl + scriptToExecute);
+        getAchievedObjectivesAsyncTask.execute(idUser);
+
+        String result = null;
+        try
+        {
+            result = getAchievedObjectivesAsyncTask.get();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+
+        if (result != null)
+        {
+            try
+            {
+                achievedObjectives = Objective.convertListAchievedObjectivesFromJSONArray(new JSONArray(result));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return achievedObjectives;
+    }
+
+    class MyAsyncTaskGetAchievedObjectives extends AsyncTask<Integer, String, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTaskGetAchievedObjectives(String url)
+        {
+            urlProvided = url;
+        }
+
+        @Override
+        protected String doInBackground(Integer... params)
+        {
+            HttpURLConnection conn;
+
+            try
+            {
+                URL url = new URL(urlProvided);
+
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("idUser", String.valueOf(params[0]));
+
+                Log.v(this.toString(), builder.toString());
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try
+            {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null)
+                    {
+                        result.append(line);
+                    }
+
+                    // Pass data to onPostExecute method
+                    return (result.toString());
+
+                } else
+                {
+
+                    return ("unsuccessful");
+                }
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
             super.onPostExecute(s);
         }
     }

@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager viewPager;
 
-    private MapController mMapController = new MapController();
+    private MapController mMapController = null;
 
     private ProfileController mProfileController = null;
     private SettingsController mSettingsController = null;
@@ -35,10 +37,15 @@ public class MainActivity extends AppCompatActivity
 
         Log.v(toString(), "On create");
 
-        mMapController = new MapController();
-        User userRecieved = (User)getIntent().getSerializableExtra("user");
-        mProfileController = new ProfileController(userRecieved);
-        mSettingsController = new SettingsController(userRecieved);
+
+        String mail = getIntent().getStringExtra("userMail");
+        String userPassword = getIntent().getStringExtra("userPassword");
+
+        User userReceived = DatabaseHandler.getInstance().getUserFromId(mail, userPassword);
+
+        mMapController = new MapController(userReceived);
+        mProfileController = new ProfileController(userReceived);
+        mSettingsController = new SettingsController(userReceived);
 
         //Initializing the tabLayout
         tabFooter = (TabLayout) findViewById(R.id.footer);

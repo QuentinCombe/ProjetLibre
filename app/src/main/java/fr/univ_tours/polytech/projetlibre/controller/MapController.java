@@ -19,11 +19,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
+import fr.univ_tours.polytech.projetlibre.model.User;
 import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
 /**
@@ -37,37 +40,47 @@ public class MapController implements View.OnClickListener
     private LinearLayout objectiveInfoLayout;
     private ImageView mClueImageView;
 
-    private ArrayList<CircleOptions> mCircles = new ArrayList<>();
-    private List<Objective> mListObjectives = null;
+    private HashMap<Objective, CircleOptions> mCircles = new HashMap<>();
 
     private MapTab mMapTab = null;
 
     private int mIdCircleSelected = -1;
 
     private int mCircleColor = 0x750000ff;
+    private int mCircleColor2 = 0xff000000;
+
+    private User mUser;
 
 
-    public void MapController()
+    public MapController(User user)
     {
-
+        mUser = user;
     }
 
-    public ArrayList<CircleOptions> constructCircles()
+    public HashMap<Objective, CircleOptions> constructCircles()
     {
-        mListObjectives = DatabaseHandler.getInstance().getObjectives();
+        List<Objective> allObjectives = GlobalDatas.getInstance().allObjectives;
 
-        if (mListObjectives != null)
+        if (allObjectives != null)
         {
-            for (Objective objective : mListObjectives)
+            for (Objective objective : allObjectives)
             {
                 CircleOptions circleOptions = Objective.convertToCircleOptions(objective);
 
-                circleOptions.strokeWidth(0.0f).fillColor(mCircleColor);
-                mCircles.add(circleOptions);
-            }
-        } else
-        {
+                if (!mUser.achievedObjectives.contains(objective))
+                {
+                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColor);
+                }
+                else
+                {
+                    Log.v(toString(), "CERCLE TROUVEEEE");
+                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColor2);
+                }
 
+
+
+                mCircles.put(objective, circleOptions);
+            }
         }
 
         return mCircles;
@@ -107,40 +120,51 @@ public class MapController implements View.OnClickListener
         openCameraModeButton.setOnClickListener(this);
     }
 
-    public int getIdCircleClicked(LatLng position)
+    public CircleOptions getCircleSelected(LatLng position)
     {
-        for (int i = 0; i < mCircles.size(); i++)
+        for (CircleOptions circleOptions : mCircles.values())
         {
-            LatLng center = mCircles.get(i).getCenter();
-            double radius = mCircles.get(i).getRadius();
+            LatLng center = circleOptions.getCenter();
+            double radius = circleOptions.getRadius();
             float[] distance = new float[1];
             Location.distanceBetween(position.latitude, position.longitude, center.latitude, center.longitude, distance);
 
             if (distance[0] < radius)
             {
-                return i;
+                return circleOptions;
             }
         }
 
-        return -1;
+        return null;
     }
 
     public int handleOnMapClick(LatLng position)
     {
-        mIdCircleSelected = getIdCircleClicked(position);
+        CircleOptions circleSelected = getCircleSelected(position);
 
-        if (mIdCircleSelected != -1)
+        if (circleSelected != null)
         {
-            Log.w(getClass().toString(), "Dangereux : utiliser une autre structure de donnee/autre modele");
+            Objective objective = null;
 
-            Objective objective = mListObjectives.get(mIdCircleSelected);
+            for (Objective anObjective : mCircles.keySet())
+            {
+                if (mCircles.get(anObjective) == circleSelected)
+                {
+                    objective = anObjective;
+                    break;
+                }
+            }
 
-            objectiveInfoLayout.setVisibility(View.VISIBLE);
+            if (objective != null)
+            {
+                objectiveInfoLayout.setVisibility(View.VISIBLE);
 
-            Log.v(getClass().toString(), "IdObjective = " + objective.id);
+                Log.v(getClass().toString(), "IdObjective = " + objective.id);
 
-            mClueImageView.setImageBitmap(objective.clue.image);
-        } else
+                mClueImageView.setImageBitmap(objective.clue.image);
+            }
+        }
+        else
         {
             if (objectiveInfoLayout.getVisibility() == View.VISIBLE)
             {
@@ -213,13 +237,19 @@ public class MapController implements View.OnClickListener
 
             if (contentFile != null)
             {
+                Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
+
                 Log.v(toString(), "Contenu = " + contentFile);
 
-                Toast.makeText(mMapTab.getContext(), "Vous avez trouve le num " + contentFile, Toast.LENGTH_LONG).show();
+                Toast.makeText(mMapTab.getContext(), "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
+
+                DatabaseHandler.getInstance().insertAchievedObjective(mUser.idUser, Integer.parseInt(contentFile));
 
                 //TODO Remove the file
                 boolean d0 = file.delete();
                 Log.w("Delete Check", "File deleted: " + d0);
+
+                mMapTab.updateCircle(objectiveFound);
             }
         }
     }

@@ -3,11 +3,14 @@ package fr.univ_tours.polytech.projetlibre.model;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+
 /**
  * Created by Alkpo on 14/02/2017.
  */
 
-public class Circle
+
+public class Circle implements Serializable
 {
     private double mLatitude;
     private double mLongitude;
