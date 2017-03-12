@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 /**
@@ -16,19 +17,19 @@ import fr.univ_tours.polytech.projetlibre.model.User;
 public class ProfileController
 {
     private View mRootView;
-    private User user;
 
     /*Affecter les valeur au component de la vue
     Tout ce ue j'ai fait dans la vue
      *  */
 
-    public ProfileController(User user){
-        this.user = user;
+    public ProfileController(){
     }
 
     public void setRootView(View rootView)
     {
         mRootView = rootView;
+        User user = GlobalDatas.getInstance().mCurrentUser;
+
         Log.d(toString(),"USER RECIEVED"+user.username);
 
         TextView profilName = (TextView) rootView.findViewById(R.id.ProfileName);

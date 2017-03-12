@@ -1,5 +1,6 @@
 package fr.univ_tours.polytech.projetlibre.controller;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
@@ -10,6 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -40,26 +44,26 @@ public class MapController implements View.OnClickListener
     private LinearLayout objectiveInfoLayout;
     private ImageView mClueImageView;
 
-    private HashMap<Objective, CircleOptions> mCircles = new HashMap<>();
+    private HashMap<Objective, CircleOptions> mCirclesOptions = new HashMap<>();
+    private HashMap<Objective, Circle> mCircles = new HashMap<>();
+    private Circle mSelectedCircle = null;
 
-    private MapTab mMapTab = null;
+    private MainActivity mMainActivity = null;
+    private GoogleMap mMap = null;
 
-    private int mIdCircleSelected = -1;
-
-    private int mCircleColor = 0x750000ff;
-    private int mCircleColor2 = 0xff000000;
-
-    private User mUser;
+    private int mCircleColorNormal = 0x750000ff;
+    private int mCircleColorFound = 0xff000000;
 
 
-    public MapController(User user)
+    public MapController(MainActivity mainActivity)
     {
-        mUser = user;
+        mMainActivity = mainActivity;
     }
 
     public HashMap<Objective, CircleOptions> constructCircles()
     {
         List<Objective> allObjectives = GlobalDatas.getInstance().allObjectives;
+        List<Objective> achievedObjectives = GlobalDatas.getInstance().mCurrentUser.achievedObjectives;
 
         if (allObjectives != null)
         {
@@ -67,30 +71,31 @@ public class MapController implements View.OnClickListener
             {
                 CircleOptions circleOptions = Objective.convertToCircleOptions(objective);
 
-                if (!mUser.achievedObjectives.contains(objective))
+                if (!achievedObjectives.contains(objective))
                 {
-                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColor);
+                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColorNormal);
                 }
                 else
                 {
                     Log.v(toString(), "CERCLE TROUVEEEE");
-                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColor2);
+                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColorFound);
                 }
 
+                Circle circle = mMap.addCircle(circleOptions);
 
+                mCirclesOptions.put(objective, circleOptions);
 
-                mCircles.put(objective, circleOptions);
+                mCircles.put(objective, circle);
             }
         }
 
-        return mCircles;
+        return null;
 
     }
 
-    public void setParameters(MapTab mapTab, View rootView)
+    public void setParameters(View rootView)
     {
         mRootView = rootView;
-        mMapTab = mapTab;
 
         objectiveInfoLayout = (LinearLayout) mRootView.findViewById(R.id.objectiveInfoLayout);
         mClueImageView = (ImageView) mRootView.findViewById(R.id.clueImageView);
@@ -120,18 +125,18 @@ public class MapController implements View.OnClickListener
         openCameraModeButton.setOnClickListener(this);
     }
 
-    public CircleOptions getCircleSelected(LatLng position)
+    public Circle getSelectedCircle(LatLng position)
     {
-        for (CircleOptions circleOptions : mCircles.values())
+        for (Circle circle: mCircles.values())
         {
-            LatLng center = circleOptions.getCenter();
-            double radius = circleOptions.getRadius();
+            LatLng center = circle.getCenter();
+            double radius = circle.getRadius();
             float[] distance = new float[1];
             Location.distanceBetween(position.latitude, position.longitude, center.latitude, center.longitude, distance);
 
             if (distance[0] < radius)
             {
-                return circleOptions;
+                return circle;
             }
         }
 
@@ -140,15 +145,22 @@ public class MapController implements View.OnClickListener
 
     public int handleOnMapClick(LatLng position)
     {
-        CircleOptions circleSelected = getCircleSelected(position);
+        Circle circle = getSelectedCircle(position);
 
-        if (circleSelected != null)
+        // Si on a déjà cliqué sur un autre cercle au préalable
+        if (mSelectedCircle != null)
+        {
+            mSelectedCircle.setStrokeWidth(0.0f);
+            mSelectedCircle = null;
+        }
+
+        if (circle != null)
         {
             Objective objective = null;
 
             for (Objective anObjective : mCircles.keySet())
             {
-                if (mCircles.get(anObjective) == circleSelected)
+                if (mCircles.get(anObjective) == circle)
                 {
                     objective = anObjective;
                     break;
@@ -163,6 +175,13 @@ public class MapController implements View.OnClickListener
 
                 mClueImageView.setImageBitmap(objective.clue.image);
             }
+
+
+            mSelectedCircle = circle;
+            mSelectedCircle.setStrokeWidth(8.0f);
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+
         }
         else
         {
@@ -174,17 +193,7 @@ public class MapController implements View.OnClickListener
 
         mClueImageView.setVisibility(View.INVISIBLE);
 
-        return mIdCircleSelected;
-    }
-
-    public void openCameraMode()
-    {
-        Intent intent = new Intent(mMapTab.getContext(), fr.univ_tours.polytech.projetlibre.unity.UnityPlayerActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        //intent.addFlags(Intent.FLAG)
-
-        mMapTab.startActivityForResult(intent, 0);
-
+        return 1;
     }
 
     public void clearMapView()
@@ -197,25 +206,19 @@ public class MapController implements View.OnClickListener
         mClueImageView.setVisibility(View.VISIBLE);
     }
 
-    public void tryToReload()
-    {
-        mMapTab.zoomOnCurrentLocation();
-
-        mMapTab.tryToGetCircles();
-    }
-
     public void checkIfAnObjectiveWasFound()
     {
         // Try to open the file
-        if (mMapTab != null)
+        //if (mMapTab != null)
         {
-            File file = new File(mMapTab.getContext().getExternalFilesDir(null), "obj.txt");
+            File file = new File(mMainActivity.getExternalFilesDir(null), "obj.txt");
             String contentFile = null;
 
             if (!file.exists())
             {
-                Toast.makeText(mMapTab.getContext(), "Aucun objectif trouve", Toast.LENGTH_LONG).show();
-            } else
+                Toast.makeText(mMainActivity, "Aucun objectif trouve", Toast.LENGTH_LONG).show();
+            }
+            else
             {
                 try
                 {
@@ -239,17 +242,15 @@ public class MapController implements View.OnClickListener
             {
                 Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
 
-                Log.v(toString(), "Contenu = " + contentFile);
+                Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
 
-                Toast.makeText(mMapTab.getContext(), "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
+                //TODO Refresh list achievedObjectives in local
+                DatabaseHandler.getInstance().insertAchievedObjective(GlobalDatas.getInstance().mCurrentUser.idUser, Integer.parseInt(contentFile));
 
-                DatabaseHandler.getInstance().insertAchievedObjective(mUser.idUser, Integer.parseInt(contentFile));
+                file.delete();
 
-                //TODO Remove the file
-                boolean d0 = file.delete();
-                Log.w("Delete Check", "File deleted: " + d0);
-
-                mMapTab.updateCircle(objectiveFound);
+                // Update the color of the circle
+                mCircles.get(objectiveFound).setFillColor(mCircleColorFound);
             }
         }
     }
@@ -259,10 +260,15 @@ public class MapController implements View.OnClickListener
     {
         if (v.getId() == R.id.openCameraModeButton)
         {
-            Intent intent = new Intent(mMapTab.getContext(), fr.univ_tours.polytech.projetlibre.unity.MyUnityPlayerActivity.class);
+            Intent intent = new Intent(mMainActivity, fr.univ_tours.polytech.projetlibre.unity.MyUnityPlayerActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-            mMapTab.startActivityForResult(intent, 0);
+            mMainActivity.startActivityForResult(intent, 0);
         }
+    }
+
+    public void setMap(GoogleMap map)
+    {
+        this.mMap = map;
     }
 }

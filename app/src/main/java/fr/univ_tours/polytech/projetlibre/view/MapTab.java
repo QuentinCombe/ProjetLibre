@@ -42,8 +42,6 @@ public class MapTab extends Fragment
 
     private MapController mMapController = null;
 
-    private HashMap<Objective, Circle> mCircles = new HashMap<>();
-    private Circle mCircledSelected = null;
 
 
     @Override
@@ -56,7 +54,8 @@ public class MapTab extends Fragment
         mRootView = inflater.inflate(R.layout.fragment_map, container, false);
 
         mMapController = mainActivity.getmMapController();
-        mMapController.setParameters(this, mRootView);
+
+        mMapController.setParameters(mRootView);
 
         // In MapController.java ??
         MapView mapView = (MapView) mRootView.findViewById(R.id.mapView);
@@ -90,6 +89,10 @@ public class MapTab extends Fragment
 
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
+
+        mMapController.setMap(mMap);
+
+        mMapController.constructCircles();
     }
 
     @Override
@@ -97,7 +100,7 @@ public class MapTab extends Fragment
     {
         zoomOnCurrentLocation();
 
-        tryToGetCircles();
+        // tryToGetCircles();
 
     }
 
@@ -115,86 +118,14 @@ public class MapTab extends Fragment
         }
     }
 
-    public void tryToGetCircles()
-    {
-        if (mCircles.size() == 0)
-        {
-            HashMap<Objective, CircleOptions> allCircles = mMapController.constructCircles();
-
-            if (allCircles.size() > 0)
-            {
-                for (Objective objective : allCircles.keySet())
-                {
-                    mCircles.put(objective, mMap.addCircle(allCircles.get(objective)));
-
-                    //mCircles.add(mMap.addCircle(circleOption));
-                }
-            } else
-            {
-                Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    public void updateCircle(Objective objective)
-    {
-        mCircles.get(objective).setFillColor(0xff000000);
-
-        /*if (mCircles.size() == 0)
-        {
-            ArrayList<CircleOptions> circleOptions = mMapController.constructCircles();
-
-            if (circleOptions.size() > 0)
-            {
-                for (CircleOptions circleOption : circleOptions)
-                {
-                    mCircles.add(mMap.addCircle(circleOption));
-                }
-            } else
-            {
-                Toast.makeText(this.getContext(), "Can't reach database...", Toast.LENGTH_LONG).show();
-            }
-        }*/
-    }
 
     @Override
     public void onMapClick(LatLng position)
     {
-        int idCircledClicked = mMapController.handleOnMapClick(position);
-
-        if (mCircledSelected != null)
-        {
-            mCircledSelected.setStrokeWidth(0.0f);
-            mCircledSelected = null;
-        }
-
-        if (idCircledClicked != -1)
-        {
-            mCircledSelected = mCircles.get(idCircledClicked);
-
-            mCircledSelected.setStrokeWidth(8.0f);
-
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
-        }
+        mMapController.handleOnMapClick(position);
     }
 
-    public void openCameraMode(View v)
-    {
-        mMapController.openCameraMode();
-    }
 
-    public void showClue(View view)
-    {
-        mMapController.showClue();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent)
-    {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        mMapController.checkIfAnObjectiveWasFound();
-    }
 
     public void onStart()
     {

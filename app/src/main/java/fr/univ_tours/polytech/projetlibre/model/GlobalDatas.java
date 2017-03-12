@@ -15,6 +15,7 @@ public class GlobalDatas
     private static GlobalDatas Inst = new GlobalDatas();
 
     public List<Objective> allObjectives = null;
+    public User mCurrentUser = null;
 
 
     private GlobalDatas()
@@ -32,15 +33,6 @@ public class GlobalDatas
 
     public Objective getObjectiveById(int idObjective)
     {
-        /*if (allObjectives == null)
-        {
-            allObjectives = DatabaseHandler.getInstance().getObjectives();
-
-
-        }*/
-
-        Log.v(toString(), "Tous les objectifs = " + allObjectives.size());
-
         Objective objective = null;
 
         for (Objective itObjective : allObjectives)
@@ -53,6 +45,11 @@ public class GlobalDatas
         }
 
         return objective;
+    }
+
+    public void setCurrentUser(User user)
+    {
+        mCurrentUser = user;
     }
 
 }

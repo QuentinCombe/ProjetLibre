@@ -43,9 +43,12 @@ public class MainActivity extends AppCompatActivity
 
         User userReceived = DatabaseHandler.getInstance().getUserFromId(mail, userPassword);
 
-        mMapController = new MapController(userReceived);
-        mProfileController = new ProfileController(userReceived);
-        mSettingsController = new SettingsController(userReceived);
+        GlobalDatas.getInstance().setCurrentUser(userReceived);
+
+        mMapController = new MapController(this);
+
+        mProfileController = new ProfileController();
+        mSettingsController = new SettingsController();
 
         //Initializing the tabLayout
         tabFooter = (TabLayout) findViewById(R.id.footer);
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 else if (tab.getPosition() == TAB_MAP)
                 {
-                    mMapController.tryToReload();
+                    // mMapController.tryToReload();
                 }
             }
 
@@ -117,5 +120,14 @@ public class MainActivity extends AppCompatActivity
     public SettingsController getmSettingsController()
     {
         return mSettingsController;
+    }
+
+    // Used after we're leaving the Unity Scene
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        mMapController.checkIfAnObjectiveWasFound();
     }
 }

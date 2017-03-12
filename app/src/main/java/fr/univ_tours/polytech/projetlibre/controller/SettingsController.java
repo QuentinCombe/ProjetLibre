@@ -17,25 +17,29 @@ import org.w3c.dom.Text;
 import java.io.IOException;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 /**
  * Created by quent on 11/03/2017.
  */
 
-public class SettingsController {
+public class SettingsController
+{
     private View mRootView;
-    private User user;
     Button validate;
 
 
-    public SettingsController(User user){
-        this.user = user;
+    public SettingsController()
+    {
     }
 
     public void setRootView(View rootView)
     {
         mRootView = rootView;
+
+        User user = GlobalDatas.getInstance().mCurrentUser;
+
         Log.d(toString(),"USER RECIEVED"+user.username);
 
 
