@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         mMapController = new MapController(this);
 
-        mProfileController = new ProfileController();
+        mProfileController = new ProfileController(this);
         mSettingsController = new SettingsController();
 
         //Initializing the tabLayout
@@ -77,8 +77,7 @@ public class MainActivity extends AppCompatActivity
                 if (tab.getPosition() != TAB_MAP)
                 {
                     mMapController.clearMapView();
-                }
-                else if (tab.getPosition() == TAB_MAP)
+                } else if (tab.getPosition() == TAB_MAP)
                 {
                     // mMapController.tryToReload();
                 }
@@ -117,6 +116,7 @@ public class MainActivity extends AppCompatActivity
     {
         return mProfileController;
     }
+
     public SettingsController getmSettingsController()
     {
         return mSettingsController;

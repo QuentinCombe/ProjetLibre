@@ -100,8 +100,6 @@ public class MapTab extends Fragment
     {
         zoomOnCurrentLocation();
 
-        // tryToGetCircles();
-
     }
 
     public void zoomOnCurrentLocation()
@@ -112,7 +110,8 @@ public class MapTab extends Fragment
         if (mLastLocation != null)
         {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15.0f));
-        } else
+        }
+        else
         {
             Toast.makeText(this.getContext(), "Can't find your location...", Toast.LENGTH_LONG).show();
         }

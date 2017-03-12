@@ -240,12 +240,14 @@ public class MapController implements View.OnClickListener
 
             if (contentFile != null)
             {
+                User currentUser = GlobalDatas.getInstance().mCurrentUser;
+
                 Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
 
                 Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
 
-                //TODO Refresh list achievedObjectives in local
-                DatabaseHandler.getInstance().insertAchievedObjective(GlobalDatas.getInstance().mCurrentUser.idUser, Integer.parseInt(contentFile));
+                DatabaseHandler.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
+                currentUser.achievedObjectives.add(objectiveFound);
 
                 file.delete();
 
