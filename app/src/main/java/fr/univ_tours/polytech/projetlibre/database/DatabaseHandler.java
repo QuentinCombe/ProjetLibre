@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.Clue;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
@@ -36,10 +37,8 @@ public class DatabaseHandler
 {
     private static DatabaseHandler Inst = new DatabaseHandler();
 	
-    private final String ipAdress = "192.168.1.12:8080";
     private String scriptToExecute = null;
-
-    private final String baseUrl = "http://" + ipAdress + "/projetlibre/";
+    private final String baseUrl = "http://" + "192.168.1.12:8080" + "/projetlibre/";
 
     private final int READ_TIMEOUT = 3000;
 

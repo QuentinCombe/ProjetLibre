@@ -6,4 +6,8 @@
     <color name="colorPrimaryDark">#c52323</color>
     <!--<color name="colorPrimaryDark">#527a00</color>-->
     <color name="colorAccent">#fff</color>
+
+    <color name="normalCircle">#750000ff</color>
+    <color name="foundCircle">#ff00f0aa</color>
+
 </resources>

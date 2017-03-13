@@ -51,9 +51,6 @@ public class MapController implements View.OnClickListener
     private MainActivity mMainActivity = null;
     private GoogleMap mMap = null;
 
-    private int mCircleColorNormal = 0x750000ff;
-    private int mCircleColorFound = 0xff000000;
-
 
     public MapController(MainActivity mainActivity)
     {
@@ -73,12 +70,12 @@ public class MapController implements View.OnClickListener
 
                 if (!achievedObjectives.contains(objective))
                 {
-                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColorNormal);
+                    circleOptions.strokeWidth(0.0f).fillColor(R.color.normalCircle);
                 }
                 else
                 {
                     Log.v(toString(), "CERCLE TROUVEEEE");
-                    circleOptions.strokeWidth(0.0f).fillColor(mCircleColorFound);
+                    circleOptions.strokeWidth(0.0f).fillColor(R.color.foundCircle);
                 }
 
                 Circle circle = mMap.addCircle(circleOptions);
@@ -123,6 +120,11 @@ public class MapController implements View.OnClickListener
 
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
+    }
+
+    public void setMap(GoogleMap map)
+    {
+        this.mMap = map;
     }
 
     public Circle getSelectedCircle(LatLng position)
@@ -236,23 +238,28 @@ public class MapController implements View.OnClickListener
 
             }
 
-            System.out.println(file.toString());
-
             if (contentFile != null)
             {
                 User currentUser = GlobalDatas.getInstance().mCurrentUser;
 
                 Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
 
-                Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
+                if (!currentUser.achievedObjectives.contains(objectiveFound))
+                {
+                    Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
 
-                DatabaseHandler.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
-                currentUser.achievedObjectives.add(objectiveFound);
+                    DatabaseHandler.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
+                    currentUser.achievedObjectives.add(objectiveFound);
 
-                file.delete();
+                    file.delete();
 
-                // Update the color of the circle
-                mCircles.get(objectiveFound).setFillColor(mCircleColorFound);
+                    // Update the color of the circle
+                    mCircles.get(objectiveFound).setFillColor(R.color.foundCircle);
+                }
+                else
+                {
+                    Toast.makeText(mMainActivity, "Vous avez deja trouve cet objectif", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -269,8 +276,5 @@ public class MapController implements View.OnClickListener
         }
     }
 
-    public void setMap(GoogleMap map)
-    {
-        this.mMap = map;
-    }
+
 }
