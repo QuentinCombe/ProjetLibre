@@ -48,26 +48,11 @@ public class ProfileController implements View.OnClickListener
         TextView exp = (TextView) mRootView.findViewById(R.id.ExpField);
         exp.setText("Experience :"+user.exp);
 
-        Button deconnectionButton = (Button) rootView.findViewById(R.id.deconnectionButton);
-        deconnectionButton.setOnClickListener(this);
+
     }
 
-
     @Override
-    public void onClick(View v)
-    {
-        if (v.getId() == R.id.deconnectionButton)
-        {
-            Intent intent = new Intent(mMainActivity, LoginActivity.class);
+    public void onClick(View v) {
 
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mMainActivity.getApplicationContext()).edit();
-
-            editor.remove("userMail");
-            editor.remove("userPassword");
-
-            editor.commit();
-
-            mMainActivity.startActivity(intent);
-        }
     }
 }

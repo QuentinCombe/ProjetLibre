@@ -1,12 +1,17 @@
 package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
@@ -61,7 +66,26 @@ public class MainActivity extends AppCompatActivity
         // Creation of our PageAdapter
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabFooter.getTabCount());
 
+        FloatingActionButton deconnectionButton = (FloatingActionButton) findViewById(R.id.deconnectionButton);
+        deconnectionButton.setOnClickListener(new View.OnClickListener(){
 
+            public void onClick(View v)
+            {
+                if (v.getId() == R.id.deconnectionButton)
+                {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+                    editor.remove("userMail");
+                    editor.remove("userPassword");
+
+                    editor.commit();
+
+                    startActivity(intent);
+                }
+            }
+        });
         // Adding the adapter to the page
         viewPager.setAdapter(adapter);
 
@@ -130,4 +154,5 @@ public class MainActivity extends AppCompatActivity
 
         mMapController.checkIfAnObjectiveWasFound();
     }
+
 }

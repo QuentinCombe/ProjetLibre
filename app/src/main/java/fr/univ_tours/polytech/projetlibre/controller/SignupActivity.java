@@ -6,9 +6,11 @@ import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.model.User;
 
 public class SignupActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -33,6 +37,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
     private UserLoginTask mAuthTask = null;
     private View mProgressView;
     private View mLoginFormView;
+    private User user;
 
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
@@ -119,9 +124,26 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
+
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            DatabaseHandler.getInstance().insertUser(name, email, password);
+            user = DatabaseHandler.getInstance().getUserFromId(email, password);
+            finish();
+            Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+            myIntent.putExtra("userMail", user.mail);
+            myIntent.putExtra("userPassword", user.password);
+
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+            editor.putString("userMail", user.mail);
+            editor.putString("userPassword", user.password);
+
+            editor.commit();
+            startActivity(myIntent);
+
+            /*mAuthTask = new UserLoginTask(email, password);
+            mAuthTask.execute((Void) null);*/
         }
     }
     private boolean isEmailValid(String email) {
