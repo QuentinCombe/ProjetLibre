@@ -9,7 +9,7 @@
 		if (isset($_POST['id']))
 		{	
 			$myId = (int) $_POST['id'];
-			$sql = 'SELECT idUser, username, mail, password FROM user WHERE idUser = ?';
+			$sql = 'SELECT idClue, image FROM Clue WHERE idClue = ?';
 			
 			$stmt = $bdd->prepare($sql);
 			$stmt->bindParam(1, $myId, PDO::PARAM_INT);
