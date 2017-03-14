@@ -128,16 +128,16 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
             showProgress(true);
             DatabaseHandler.getInstance().insertUser(name, email, password);
-            user = DatabaseHandler.getInstance().getUserFromId(email, password);
-            finish();
+
+            //finish();
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-            myIntent.putExtra("userMail", user.mail);
-            myIntent.putExtra("userPassword", user.password);
+            myIntent.putExtra("userMail", email);
+            myIntent.putExtra("userPassword", password);
 
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
 
-            editor.putString("userMail", user.mail);
-            editor.putString("userPassword", user.password);
+            editor.putString("userMail", email);
+            editor.putString("userPassword", password);
 
             editor.commit();
             startActivity(myIntent);

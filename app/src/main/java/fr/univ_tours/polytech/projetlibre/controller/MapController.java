@@ -3,9 +3,11 @@ package fr.univ_tours.polytech.projetlibre.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
 import fr.univ_tours.polytech.projetlibre.view.MapTab;
+import fr.univ_tours.polytech.projetlibre.view.ObjectiveFoundView;
 
 /**
  * Created by Alkpo on 14/02/2017.
@@ -41,12 +44,18 @@ public class MapController implements View.OnClickListener
 {
     private View mRootView;
 
+    private FrameLayout mapFragmentLayout;
+
     private LinearLayout objectiveInfoLayout;
+
     private ImageView mClueImageView;
+    private Button openCameraButton;
 
     private HashMap<Objective, CircleOptions> mCirclesOptions = new HashMap<>();
     private HashMap<Objective, Circle> mCircles = new HashMap<>();
     private Circle mSelectedCircle = null;
+
+    private ObjectiveFoundView objectiveFoundView = null;
 
     private MainActivity mMainActivity = null;
     private GoogleMap mMap = null;
@@ -70,12 +79,12 @@ public class MapController implements View.OnClickListener
 
                 if (!achievedObjectives.contains(objective))
                 {
-                    circleOptions.strokeWidth(0.0f).fillColor(R.color.normalCircle);
+                    circleOptions.strokeWidth(0.0f).fillColor(ContextCompat.getColor(mMainActivity, R.color.normalCircle));
                 }
                 else
                 {
                     Log.v(toString(), "CERCLE TROUVEEEE");
-                    circleOptions.strokeWidth(0.0f).fillColor(R.color.foundCircle);
+                    circleOptions.strokeWidth(0.0f).fillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
                 }
 
                 Circle circle = mMap.addCircle(circleOptions);
@@ -90,7 +99,7 @@ public class MapController implements View.OnClickListener
 
     }
 
-    public void setParameters(View rootView)
+    public void setRootView(View rootView)
     {
         mRootView = rootView;
 
@@ -120,6 +129,10 @@ public class MapController implements View.OnClickListener
 
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
+
+        objectiveFoundView = (ObjectiveFoundView) mRootView.findViewById(R.id.objectiveFoundView);
+
+        openCameraButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
     }
 
     public void setMap(GoogleMap map)
@@ -171,11 +184,21 @@ public class MapController implements View.OnClickListener
 
             if (objective != null)
             {
+
                 objectiveInfoLayout.setVisibility(View.VISIBLE);
 
                 Log.v(getClass().toString(), "IdObjective = " + objective.id);
 
                 mClueImageView.setImageBitmap(objective.clue.image);
+
+                if (GlobalDatas.getInstance().mCurrentUser.achievedObjectives.contains(objective))
+                {
+                    openCameraButton.setActivated(false);
+                }
+                else
+                {
+                    openCameraButton.setActivated(true);
+                }
             }
 
 
@@ -254,14 +277,31 @@ public class MapController implements View.OnClickListener
                     file.delete();
 
                     // Update the color of the circle
-                    mCircles.get(objectiveFound).setFillColor(R.color.foundCircle);
+                    mCircles.get(objectiveFound).setFillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
                 }
-                else
-                {
-                    Toast.makeText(mMainActivity, "Vous avez deja trouve cet objectif", Toast.LENGTH_LONG).show();
-                }
+
+                mMainActivity.updateObjectiveFound(objectiveFound);
+
+                createObjectiveFoundView(objectiveFound);
             }
+            else
+            {
+                Toast.makeText(mMainActivity, "Vous avez deja trouve cet objectif", Toast.LENGTH_LONG).show();
+            }
+
         }
+    }
+
+    private void createObjectiveFoundView(Objective objectiveFound)
+    {
+        /*ObjectiveFoundView objectiveFoundView = new ObjectiveFoundView(this.mMainActivity.getApplicationContext());
+        objectiveFoundView.setObjective(objectiveFound);
+
+        mRootView.add(objectiveFoundView);*/
+
+        objectiveFoundView.setObjective(objectiveFound);
+
+        objectiveFoundView.setVisibility(View.VISIBLE);
     }
 
     @Override

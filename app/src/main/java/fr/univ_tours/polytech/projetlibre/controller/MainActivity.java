@@ -1,7 +1,10 @@
 package fr.univ_tours.polytech.projetlibre.controller;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
+import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
 import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
@@ -57,7 +61,6 @@ public class MainActivity extends AppCompatActivity
 
         //Initializing the tabLayout
         tabFooter = (TabLayout) findViewById(R.id.footer);
-        setupTabLayout(tabFooter);
         tabFooter.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //Initializing the viewPager
@@ -66,26 +69,27 @@ public class MainActivity extends AppCompatActivity
         // Creation of our PageAdapter
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabFooter.getTabCount());
 
-        FloatingActionButton deconnectionButton = (FloatingActionButton) findViewById(R.id.deconnectionButton);
-        deconnectionButton.setOnClickListener(new View.OnClickListener(){
+//        FloatingActionButton deconnectionButton = (FloatingActionButton) findViewById(R.id.deconnectionButton);
+//        deconnectionButton.setOnClickListener(new View.OnClickListener(){
+//
+//            public void onClick(View v)
+//            {
+//                if (v.getId() == R.id.deconnectionButton)
+//                {
+//                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//
+//                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//
+//                    editor.remove("userMail");
+//                    editor.remove("userPassword");
+//
+//                    editor.commit();
+//
+//                    startActivity(intent);
+//                }
+//            }
+//        });
 
-            public void onClick(View v)
-            {
-                if (v.getId() == R.id.deconnectionButton)
-                {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-
-                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-
-                    editor.remove("userMail");
-                    editor.remove("userPassword");
-
-                    editor.commit();
-
-                    startActivity(intent);
-                }
-            }
-        });
         // Adding the adapter to the page
         viewPager.setAdapter(adapter);
 
@@ -121,16 +125,6 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void setupTabLayout(TabLayout tabLayout)
-    {
-//        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        //tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-        tabLayout.getTabAt(TAB_PROFILE).setIcon(R.drawable.user);
-        tabLayout.getTabAt(TAB_MAP).setIcon(R.drawable.placeholder);
-        tabLayout.getTabAt(TAB_SETTINGS).setIcon(R.drawable.settings);
-
-    }
-
     public MapController getmMapController()
     {
         return mMapController;
@@ -146,6 +140,14 @@ public class MainActivity extends AppCompatActivity
         return mSettingsController;
     }
 
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
     // Used after we're leaving the Unity Scene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
@@ -153,6 +155,11 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, intent);
 
         mMapController.checkIfAnObjectiveWasFound();
+    }
+
+    public void updateObjectiveFound(Objective objectiveFound)
+    {
+        mProfileController.updateObjectiveFound(objectiveFound);
     }
 
 }

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Lun 13 Mars 2017 à 15:45
+-- Généré le :  Mar 14 Mars 2017 à 17:35
 -- Version du serveur :  5.7.9
 -- Version de PHP :  5.6.16
 
@@ -37,10 +37,7 @@ CREATE TABLE IF NOT EXISTS `achievedobjectives` (
 --
 
 INSERT INTO `achievedobjectives` (`idUser`, `idObjective`) VALUES
-(3, 1),
-(3, 1),
-(3, 2),
-(3, 3);
+(3, 2);
 
 -- --------------------------------------------------------
 
@@ -135,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `level` int(11) NOT NULL,
   `image` text NOT NULL,
   PRIMARY KEY (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `user`

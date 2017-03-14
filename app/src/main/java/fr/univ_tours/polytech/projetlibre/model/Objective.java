@@ -24,6 +24,7 @@ public class Objective implements Serializable
     public int id;
     public int difficulty;
     public Circle circle;
+    public String textAfterDiscovery;
 
     public Clue clue;
 
@@ -49,6 +50,8 @@ public class Objective implements Serializable
                                 objectiveJsonObject.getDouble("radius"));
 
                 objective.clue = DatabaseHandler.getInstance().getClueFromId(objectiveJsonObject.getInt("idClue"));
+
+                objective.textAfterDiscovery = objectiveJsonObject.getString("textAfterDiscovery");
 
 
                 listObjectives.add(objective);

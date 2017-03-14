@@ -38,7 +38,7 @@ public class DatabaseHandler
     private static DatabaseHandler Inst = new DatabaseHandler();
 	
     private String scriptToExecute = null;
-    private final String baseUrl = "http://" + "192.168.0.13:80" + "/projetlibre/";
+    private final String baseUrl = "http://" + "172.25.69.100:8080" + "/projetlibre/";
 
     private final int READ_TIMEOUT = 3000;
 
@@ -455,7 +455,7 @@ public class DatabaseHandler
         scriptToExecute = "selectUserFromIdentifier.php";
 
         MyAsyncTaskGetUserFromIdentifier getUserFromIdentifierAsyncTask = new MyAsyncTaskGetUserFromIdentifier(baseUrl + scriptToExecute);
-        Log.d(toString(),mail+"\n"+password);
+        Log.v(toString(),mail+"\n"+password);
         getUserFromIdentifierAsyncTask.execute(mail,password);
 
         String result = null;
@@ -463,7 +463,7 @@ public class DatabaseHandler
         {
             result = getUserFromIdentifierAsyncTask.get();
 
-            Log.v(toString(), result);
+            Log.v(toString(), "Resultat = " + result);
         }
         catch (InterruptedException e)
         {
@@ -496,19 +496,19 @@ public class DatabaseHandler
 
         public MyAsyncTaskGetUserFromIdentifier(String url)
         {
-            Log.d(toString(),"HERE");
+            Log.v(toString(),"HERE");
             urlProvided = url;
         }
 
         @Override
         protected void onPreExecute() {
 
-            Log.d(toString(),"HERE In myAsynchTask");
+            Log.v(toString(),"HERE In myAsynchTask");
         }
         @Override
         protected String doInBackground(String... params) {
             HttpURLConnection conn;
-            Log.d(toString(),"param : \n"+params[0]+"\n"+params[1]);
+            Log.v(toString(),"param : \n"+params[0]+"\n"+params[1]);
             try
             {
 
@@ -527,7 +527,7 @@ public class DatabaseHandler
                         .appendQueryParameter("mail", params[0])
                         .appendQueryParameter("password",params[1]);
 
-                Log.v(this.toString(), builder.toString());
+                Log.v(this.toString(), "Resultat du builder = " + builder.toString());
 
                 String query = builder.build().getEncodedQuery();
 
@@ -564,10 +564,11 @@ public class DatabaseHandler
                         result.append(line);
                     }
                     // Pass data to onPostExecute method
-                    Log.d(toString(),"Result :"+result.toString());
+                    Log.v(toString(),"Result de la requete  :"+result.toString());
                     return (result.toString());
                 } else
                 {
+                    Log.v(toString(), "Code derreur = " + response_code);
                     return ("unsuccessful");
                 }
             }
@@ -584,7 +585,7 @@ public class DatabaseHandler
         @Override
         protected void onPostExecute(String s)
         {
-            Log.d(toString(),"RECIEVED : "+s);
+            Log.v(toString(),"RECIEVED : "+s);
             super.onPostExecute(s);
         }
     }

@@ -55,7 +55,7 @@ public class MapTab extends Fragment
 
         mMapController = mainActivity.getmMapController();
 
-        mMapController.setParameters(mRootView);
+        mMapController.setRootView(mRootView);
 
         // In MapController.java ??
         MapView mapView = (MapView) mRootView.findViewById(R.id.mapView);

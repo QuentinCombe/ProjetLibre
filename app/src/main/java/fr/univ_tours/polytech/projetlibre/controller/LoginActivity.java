@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -59,7 +61,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -102,19 +103,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        if (sharedPref.contains("userMail") && sharedPref.contains("userPassword"))
+        if (this.isNetworkAvailable())
         {
-            String mail = sharedPref.getString("userMail", null);
-            String password = sharedPref.getString("userPassword", null);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+            if (sharedPref.contains("userMail") && sharedPref.contains("userPassword"))
+            {
+                String mail = sharedPref.getString("userMail", null);
+                String password = sharedPref.getString("userPassword", null);
 
-            myIntent.putExtra("userMail", mail);
-            myIntent.putExtra("userPassword", password);
+                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
 
-            startActivity(myIntent);
+                myIntent.putExtra("userMail", mail);
+                myIntent.putExtra("userPassword", password);
+
+                startActivity(myIntent);
+            }
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "No Internet connection", Toast.LENGTH_LONG).show();
         }
 
         // Set up the login form.
@@ -178,85 +186,86 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin()
     {
-        if (mAuthTask != null)
+        if (isNetworkAvailable())
         {
-            return;
-        }
+            // Reset errors.
+            mEmailView.setError(null);
+            mPasswordView.setError(null);
 
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+            // Store values at the time of the login attempt.
+            String email = mEmailView.getText().toString();
+            String password = mPasswordView.getText().toString();
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+            boolean cancel = false;
+            View focusView = null;
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password))
-        {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email))
-        {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email))
-        {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel)
-        {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else
-        {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            if (checkUser(email, password) == "Valide")
+            // Check for a valid password, if the user entered one.
+            if (!TextUtils.isEmpty(password) && !isPasswordValid(password))
             {
-                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-
-                Log.d(toString(), "USER : " + user);
-
-                myIntent.putExtra("userMail", user.mail);
-                myIntent.putExtra("userPassword", user.password);
-
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-
-                editor.putString("userMail", user.mail);
-                editor.putString("userPassword", user.password);
-
-                editor.commit();
-
-                startActivity(myIntent);
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+                focusView = mPasswordView;
+                cancel = true;
             }
-            else
+
+            // Check for a valid email address.
+            if (TextUtils.isEmpty(email))
             {
-                showProgress(false);
-                if (checkUser(email, password) == "Failed mail")
+                mEmailView.setError(getString(R.string.error_field_required));
+                focusView = mEmailView;
+                cancel = true;
+            } else if (!isEmailValid(email))
+            {
+                mEmailView.setError(getString(R.string.error_invalid_email));
+                focusView = mEmailView;
+                cancel = true;
+            }
+
+            if (cancel)
+            {
+                // There was an error; don't attempt login and focus the first
+                // form field with an error.
+                focusView.requestFocus();
+            } else
+            {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                showProgress(true);
+                if (checkUser(email, password) == "Valide")
                 {
-                    mEmailView.setError(getString(R.string.error_incorrect_password));
-                    mEmailView.requestFocus();
-                } else if (checkUser(email, password) == "Failed pass")
+                    Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+
+                    Log.d(toString(), "USER : " + user);
+
+                    myIntent.putExtra("userMail", user.mail);
+                    myIntent.putExtra("userPassword", user.password);
+
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+                    editor.putString("userMail", user.mail);
+                    editor.putString("userPassword", user.password);
+
+                    editor.commit();
+
+                    startActivity(myIntent);
+                } else
                 {
-                    mPasswordView.setError(getString(R.string.error_incorrect_mail));
-                    mPasswordView.requestFocus();
+                    showProgress(false);
+                    if (checkUser(email, password) == "Failed mail")
+                    {
+                        mEmailView.setError(getString(R.string.error_incorrect_password));
+                        mEmailView.requestFocus();
+                    } else if (checkUser(email, password) == "Failed pass")
+                    {
+                        mPasswordView.setError(getString(R.string.error_incorrect_mail));
+                        mPasswordView.requestFocus();
+                    }
+                    Toast.makeText(getApplicationContext(), "Failed to login", Toast.LENGTH_LONG).show();
                 }
-                Toast.makeText(getApplicationContext(), "Failed to login", Toast.LENGTH_LONG).show();
             }
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Impossible d'etablir la connexion", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -369,6 +378,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
 
     private interface ProfileQuery
     {
@@ -381,67 +398,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean>
-    {
 
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password)
-        {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            // TODO: attempt authentication against a network service.
-
-            // Simulate network access.
-
-
-           /* for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success)
-        {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success)
-            {
-                finish();
-                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-//        myIntent.putExtra("user", user);
-                startActivity(myIntent);
-            } else
-            {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled()
-        {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 

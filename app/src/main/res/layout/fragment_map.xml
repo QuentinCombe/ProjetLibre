@@ -1,48 +1,63 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clickable="true"/>
 
 
+
+<!-- Menu de choix d'action lorsqu'on clique sur un cercle -->
     <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:id="@+id/objectiveInfoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:visibility="invisible"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
-        android:padding="2dp">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/showClueButton"
-                android:layout_gravity="center_horizontal"
-                android:text="Show Clue"
-                android:padding="16dp" />
+        android:padding="8dp"
+        android:visibility="invisible">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Camera"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/openCameraModeButton"
-                android:padding="16dp" />
+        <Button
+            android:id="@+id/showClueButton"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/info"
+            android:padding="16dp"/>
 
+        <Button
+            android:id="@+id/openCameraModeButton"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/photo"
+            android:padding="16dp"/>
     </LinearLayout>
 
+<!-- ImageView correspondant à l'objectif -->
     <ImageView
+        android:id="@+id/clueImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/clueImageView"
         android:layout_margin="8dp"
-        android:visibility="invisible"
-        android:src="@drawable/sunset"
+        android:background="#000000"
         android:padding="1dp"
-        android:background="#000000" />
+        android:src="@drawable/sunset"
+        android:visibility="invisible"/>
+
+<!-- Vue qui apparait lorsqu'on a trouvé un objectif -->
+    <fr.univ_tours.polytech.projetlibre.view.ObjectiveFoundView
+        android:id="@+id/objectiveFoundView"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:background="@color/colorAccent"
+        android:visibility="invisible"/>
 
 </FrameLayout>
