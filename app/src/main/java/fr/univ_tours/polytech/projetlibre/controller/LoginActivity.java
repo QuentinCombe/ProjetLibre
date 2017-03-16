@@ -17,7 +17,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -35,13 +34,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
-import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
+import fr.univ_tours.polytech.projetlibre.database.UserDB;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 
@@ -74,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public String checkUser(String mail, String password)
     {
 
-        user = DatabaseHandler.getInstance().getUserFromId(mail, password);
+        user = UserDB.getInstance().getUserFromId(mail, password);
         if (user != null)
         {
             if (user.mail.equals(mail))

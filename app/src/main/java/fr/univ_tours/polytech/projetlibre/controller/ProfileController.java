@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class ProfileController implements View.OnClickListener
     private ListView achievedObjectivesListView = null;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> listObjectivesString = null;
+
+    private TextView expTextView = null;
 
     /*Affecter les valeur au component de la vue
     Tout ce ue j'ai fait dans la vue
@@ -56,8 +60,8 @@ public class ProfileController implements View.OnClickListener
         TextView lvl = (TextView) mRootView.findViewById(R.id.lvlField);
         lvl.setText("Lvl :"+user.lvl);
 
-        TextView exp = (TextView) mRootView.findViewById(R.id.ExpField);
-        exp.setText("Experience :"+user.exp);
+        expTextView = (TextView) mRootView.findViewById(R.id.ExpField);
+        expTextView.setText("Experience : " + user.exp);
 
         Button deconnexionButton = (Button) mRootView.findViewById(R.id.deconnexionButton);
         deconnexionButton.setOnClickListener(this);
@@ -92,6 +96,8 @@ public class ProfileController implements View.OnClickListener
         listObjectivesString.add("Num = " + objectiveFound.id + " : " + objectiveFound.textAfterDiscovery);
 
         adapter.notifyDataSetChanged();
+
+        expTextView.setText("Experience : " + GlobalDatas.getInstance().mCurrentUser.exp);
     }
 
     @Override

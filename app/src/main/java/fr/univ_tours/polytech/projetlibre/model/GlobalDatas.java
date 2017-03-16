@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.List;
 
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.ObjectiveDB;
 
 /**
  * Created by Alkpo on 11/03/2017.
@@ -21,7 +21,7 @@ public class GlobalDatas
     private GlobalDatas()
     {
         Log.v(toString(), "GlobalDatas constructor");
-        allObjectives = DatabaseHandler.getInstance().getObjectives();
+        allObjectives = ObjectiveDB.getInstance().getObjectives();
 
         Log.v(toString(), "Tous les objectifs = " + allObjectives.size());
     }

@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.ClueDB;
 
 /**
  * Created by Alkpo on 14/02/2017.
@@ -23,6 +23,7 @@ public class Objective implements Serializable
 {
     public int id;
     public int difficulty;
+    public int reward;
     public Circle circle;
     public String textAfterDiscovery;
 
@@ -49,7 +50,9 @@ public class Objective implements Serializable
                                 objectiveJsonObject.getDouble("longitude"),
                                 objectiveJsonObject.getDouble("radius"));
 
-                objective.clue = DatabaseHandler.getInstance().getClueFromId(objectiveJsonObject.getInt("idClue"));
+                objective.reward =  objectiveJsonObject.getInt("reward");
+
+                objective.clue = ClueDB.getInstance().getClueFromId(objectiveJsonObject.getInt("idClue"));
 
                 objective.textAfterDiscovery = objectiveJsonObject.getString("textAfterDiscovery");
 

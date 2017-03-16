@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tours.polytech.projetlibre.R;
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.UserDB;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 public class SignupActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -127,7 +127,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
 
             showProgress(true);
-            DatabaseHandler.getInstance().insertUser(name, email, password);
+            UserDB.getInstance().insertUser(name, email, password);
 
             //finish();
             Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);

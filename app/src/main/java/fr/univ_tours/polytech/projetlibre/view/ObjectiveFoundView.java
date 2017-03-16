@@ -55,7 +55,12 @@ public class ObjectiveFoundView extends LinearLayout implements View.OnClickList
 
     public void setObjective(Objective objective)
     {
-        textView.setText("Bravo, vous avez trouve un objectif !\n" + objective.textAfterDiscovery);
+        String text = "";
+
+        text += "Bravo, vous avez trouve un objectif !\n" + objective.textAfterDiscovery + '\n';
+        text += "Vous avez gagne " + objective.reward + " points d'experience :) ";
+
+        textView.setText(text);
     }
 
     @Override

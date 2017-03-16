@@ -8,9 +8,8 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.AchievedObjectivesDB;
 
 /**
  * Created by quent on 06/03/2017.
@@ -41,10 +40,9 @@ public class User implements Serializable {
             user.exp = jsonObject.getInt("exp");
             user.lvl = jsonObject.getInt("level");
 
-
            // user.profilePicture = DatabaseHandler.getInstance().getBitmapClueFromName(jsonObject.getString("image"));
 
-            user.achievedObjectives =  DatabaseHandler.getInstance().getAchievedObjectivesById(user.idUser);
+            user.achievedObjectives =  AchievedObjectivesDB.getInstance().getAchievedObjectivesById(user.idUser);
 
             for (Objective achievedObjective : user.achievedObjectives)
             {
@@ -59,5 +57,12 @@ public class User implements Serializable {
 
         return user;
 
+    }
+
+    public void addObjectiveFound(Objective objective)
+    {
+        achievedObjectives.add(objective);
+
+        exp += objective.reward;
     }
 }

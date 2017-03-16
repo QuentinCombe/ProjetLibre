@@ -1,0 +1,14 @@
+https://fr.000webhost.com/
+
+Login : monsieurjaky@gmail.com
+MDP : *******
+
+Gestion de la BDD : https://databases-auth.000webhost.com/index.php
+Nom du sous domaine : projetlibrecapocombemorel.netai.net
+Nom de la BDD : id1089444_projetlibre
+User : capo
+MDP : ******
+
+
+Gestion de fichier : 
+https://files.000webhost.com/, puis dossier public_html

@@ -2,26 +2,19 @@ package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import fr.univ_tours.polytech.projetlibre.R;
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.UserDB;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
-import fr.univ_tours.polytech.projetlibre.view.MapTab;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -50,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         String mail = getIntent().getStringExtra("userMail");
         String userPassword = getIntent().getStringExtra("userPassword");
 
-        User userReceived = DatabaseHandler.getInstance().getUserFromId(mail, userPassword);
+        User userReceived = UserDB.getInstance().getUserFromId(mail, userPassword);
 
         GlobalDatas.getInstance().setCurrentUser(userReceived);
 

@@ -1,8 +1,8 @@
 package fr.univ_tours.polytech.projetlibre.controller;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,16 +23,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.AchievedObjectivesDB;
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
-import fr.univ_tours.polytech.projetlibre.view.MapTab;
 import fr.univ_tours.polytech.projetlibre.view.ObjectiveFoundView;
 
 /**
@@ -54,6 +51,7 @@ public class MapController implements View.OnClickListener
     private HashMap<Objective, CircleOptions> mCirclesOptions = new HashMap<>();
     private HashMap<Objective, Circle> mCircles = new HashMap<>();
     private Circle mSelectedCircle = null;
+    private Objective mSelectedObjective = null;
 
     private ObjectiveFoundView objectiveFoundView = null;
 
@@ -113,7 +111,19 @@ public class MapController implements View.OnClickListener
             @Override
             public void onClick(View v)
             {
-                showClue();
+                if (!mSelectedObjective.clue.isImageLoaded())
+                {
+                    Toast.makeText(mMainActivity.getApplicationContext(), "Récupération de l'indice en cours...", Toast.LENGTH_SHORT).show();
+                }
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showClue();
+                    }
+                }, 100);
+
             }
         });
 
@@ -158,7 +168,7 @@ public class MapController implements View.OnClickListener
         return null;
     }
 
-    public int handleOnMapClick(LatLng position)
+    public void handleOnMapClick(LatLng position)
     {
         Circle circle = getSelectedCircle(position);
 
@@ -167,31 +177,35 @@ public class MapController implements View.OnClickListener
         {
             mSelectedCircle.setStrokeWidth(0.0f);
             mSelectedCircle = null;
+            mSelectedObjective = null;
+
         }
 
-        if (circle != null)
+        if (circle != null && circle != mSelectedCircle)
         {
-            Objective objective = null;
+            mSelectedObjective = null;
 
             for (Objective anObjective : mCircles.keySet())
             {
                 if (mCircles.get(anObjective) == circle)
                 {
-                    objective = anObjective;
+                    mSelectedObjective = anObjective;
                     break;
                 }
             }
 
-            if (objective != null)
+            if (mSelectedObjective != null)
             {
-
                 objectiveInfoLayout.setVisibility(View.VISIBLE);
 
-                Log.v(getClass().toString(), "IdObjective = " + objective.id);
+                Log.v(getClass().toString(), "IdObjective = " + mSelectedObjective.id);
 
-                mClueImageView.setImageBitmap(objective.clue.image);
+                if (mSelectedObjective.clue.image != null)
+                {
+                    mClueImageView.setImageBitmap(mSelectedObjective.clue.image);
+                }
 
-                if (GlobalDatas.getInstance().mCurrentUser.achievedObjectives.contains(objective))
+                if (GlobalDatas.getInstance().mCurrentUser.achievedObjectives.contains(mSelectedObjective))
                 {
                     openCameraButton.setActivated(false);
                 }
@@ -217,8 +231,6 @@ public class MapController implements View.OnClickListener
         }
 
         mClueImageView.setVisibility(View.INVISIBLE);
-
-        return 1;
     }
 
     public void clearMapView()
@@ -228,6 +240,12 @@ public class MapController implements View.OnClickListener
 
     public void showClue()
     {
+        if (!mSelectedObjective.clue.isImageLoaded())
+        {
+            mSelectedObjective.clue.loadImage();
+            mClueImageView.setImageBitmap(mSelectedObjective.clue.image);
+        }
+
         mClueImageView.setVisibility(View.VISIBLE);
     }
 
@@ -271,8 +289,10 @@ public class MapController implements View.OnClickListener
                 {
                     Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
 
-                    DatabaseHandler.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
-                    currentUser.achievedObjectives.add(objectiveFound);
+                    // Update the database (table AchievedObjectives)
+                    AchievedObjectivesDB.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
+
+                    currentUser.addObjectiveFound(objectiveFound);
 
                     file.delete();
 
@@ -294,11 +314,6 @@ public class MapController implements View.OnClickListener
 
     private void createObjectiveFoundView(Objective objectiveFound)
     {
-        /*ObjectiveFoundView objectiveFoundView = new ObjectiveFoundView(this.mMainActivity.getApplicationContext());
-        objectiveFoundView.setObjective(objectiveFound);
-
-        mRootView.add(objectiveFoundView);*/
-
         objectiveFoundView.setObjective(objectiveFound);
 
         objectiveFoundView.setVisibility(View.VISIBLE);

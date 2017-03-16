@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
+import fr.univ_tours.polytech.projetlibre.database.ClueDB;
 
 /**
  * Created by Alkpo on 23/02/2017.
@@ -16,7 +16,21 @@ import fr.univ_tours.polytech.projetlibre.database.DatabaseHandler;
 public class Clue implements Serializable
 {
     public int idClue;
+    private String imageName;
+    private boolean imageLoaded = false;
     public Bitmap image;
+
+    public void loadImage()
+    {
+        this.image = ClueDB.getInstance().getBitmapClueFromName(imageName);
+
+        imageLoaded = true;
+    }
+
+    public boolean isImageLoaded()
+    {
+        return imageLoaded;
+    }
 
     public static Clue convertFromJsonObject(JSONObject jsonObject)
     {
@@ -26,7 +40,8 @@ public class Clue implements Serializable
         {
             clue.idClue = jsonObject.getInt("idClue");
 
-            clue.image = DatabaseHandler.getInstance().getBitmapClueFromName(jsonObject.getString("image"));
+            clue.imageName = jsonObject.getString("image");
+            clue.image = null;
 
         }
         catch (JSONException e)
@@ -37,6 +52,8 @@ public class Clue implements Serializable
         return clue;
 
     }
+
+
 
 
 }
