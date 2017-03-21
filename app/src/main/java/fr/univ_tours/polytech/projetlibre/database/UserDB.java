@@ -289,21 +289,27 @@ public class UserDB extends DatabaseHandler
 
     }
 
-<<<<<<< HEAD
     public void updateUserExperience(int idUser, int exp)
     {
         scriptToExecute = "scripts/updateUserExperience.php";
 
-        MyAsyncTaskUpdateUserExperience updateUserExperienceAsyncTask = new MyAsyncTaskUpdateUserExperience(baseUrl + scriptToExecute);
-
-        Log.v(toString(), baseUrl + scriptToExecute);
-
-        updateUserExperienceAsyncTask.execute(idUser, exp);
+        MyAsyncTaskUpdateUserExperience updateUserExp = new MyAsyncTaskUpdateUserExperience(baseUrl + scriptToExecute);
+        updateUserExp.execute(idUser, exp);
 
         try
         {
-            Log.v(toString(), updateUserExperienceAsyncTask.get());
-=======
+            Log.v(toString(), updateUserExp.get());
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void updateUser(String username, String email, String password, String id)
     {
         scriptToExecute = "scripts/updateUser.php";
@@ -314,7 +320,6 @@ public class UserDB extends DatabaseHandler
         try
         {
             Log.v(toString(), updateUser.get());
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         }
         catch (InterruptedException e)
         {
@@ -324,34 +329,18 @@ public class UserDB extends DatabaseHandler
         {
             e.printStackTrace();
         }
-<<<<<<< HEAD
-
-
-    }
-
-    class MyAsyncTaskUpdateUserExperience extends AsyncTask<Integer, Void, String>
-    {
-        String urlProvided = null;
-
-        public MyAsyncTaskUpdateUserExperience(String url)
-=======
     }
     class MyAsyncTaskUpdateUser extends AsyncTask<String, Void, String>
     {
         String urlProvided = null;
 
         public MyAsyncTaskUpdateUser(String url)
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         {
             urlProvided = url;
         }
 
         @Override
-<<<<<<< HEAD
-        protected String doInBackground(Integer... params)
-=======
         protected String doInBackground(String... params)
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         {
             HttpURLConnection conn;
 
@@ -367,16 +356,6 @@ public class UserDB extends DatabaseHandler
                 // setDoInput and setDoOutput method depict handling of both send and receive
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
-<<<<<<< HEAD
-
-                // Append parameters to URL
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("idUser", String.valueOf(params[0]))
-                        .appendQueryParameter("exp", String.valueOf(params[1]));
-
-                Log.v(this.toString(), "Contenu de la query = " + builder.toString());
-
-=======
                 Log.d(toString()," username: "+String.valueOf(params[0])+
                         " mail: "+String.valueOf(params[1])+
                         " password: "+String.valueOf(params[2])+
@@ -389,7 +368,6 @@ public class UserDB extends DatabaseHandler
                         .appendQueryParameter("idUser", String.valueOf(params[3]));
 
                 Log.v(this.toString(), "Contenu de la query = " + builder.toString());
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -401,10 +379,6 @@ public class UserDB extends DatabaseHandler
                 writer.close();
                 os.close();
                 conn.connect();
-<<<<<<< HEAD
-
-=======
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
             }
             catch (IOException e1)
             {
@@ -412,8 +386,97 @@ public class UserDB extends DatabaseHandler
                 e1.printStackTrace();
                 return "exception";
             }
-<<<<<<< HEAD
+            try
+            {
+                int response_code = conn.getResponseCode();
+                Log.v(toString(), "Reponse = " + response_code);
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+                    return "success";
+                }
+                else
+                {
+                    return ("unsuccessful");
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
 
+        @Override
+        protected void onPostExecute(String s)
+        {
+            super.onPostExecute(s);
+        }
+
+
+    }
+
+
+
+    class MyAsyncTaskUpdateUserExperience extends AsyncTask<Integer, Void, String>
+    {
+
+        String urlProvided = null;
+
+        public MyAsyncTaskUpdateUserExperience(String url)
+        {
+            urlProvided = url;
+        }
+
+        @Override
+        protected String doInBackground(Integer... params)
+        {
+            HttpURLConnection conn;
+
+            try
+            {
+                URL url = new URL(urlProvided);
+
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("idUser", String.valueOf(params[0]))
+                        .appendQueryParameter("exp", String.valueOf(params[1]));
+
+                Log.v(this.toString(), "Contenu de la query = " + builder.toString());
+
+                
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
             try
             {
 
@@ -442,8 +505,12 @@ public class UserDB extends DatabaseHandler
 
                     return ("unsuccessful");
                 }
+            }
+            catch (Exception e)
+            {
 
-=======
+            }
+
             try
             {
                 int response_code = conn.getResponseCode();
@@ -457,7 +524,6 @@ public class UserDB extends DatabaseHandler
                 {
                     return ("unsuccessful");
                 }
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
             }
             catch (IOException e)
             {
@@ -475,11 +541,7 @@ public class UserDB extends DatabaseHandler
         {
             super.onPostExecute(s);
         }
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
     }
 
 
