@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:id="@+id/editText"
+            android:id="@+id/confirmPass"
             android:drawableLeft="@drawable/key"
             android:paddingLeft="20dp"
             android:paddingTop="10dp"

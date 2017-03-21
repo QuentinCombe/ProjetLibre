@@ -289,6 +289,7 @@ public class UserDB extends DatabaseHandler
 
     }
 
+<<<<<<< HEAD
     public void updateUserExperience(int idUser, int exp)
     {
         scriptToExecute = "scripts/updateUserExperience.php";
@@ -302,6 +303,18 @@ public class UserDB extends DatabaseHandler
         try
         {
             Log.v(toString(), updateUserExperienceAsyncTask.get());
+=======
+    public void updateUser(String username, String email, String password, String id)
+    {
+        scriptToExecute = "scripts/updateUser.php";
+
+        MyAsyncTaskUpdateUser updateUser = new MyAsyncTaskUpdateUser(baseUrl + scriptToExecute);
+        updateUser.execute(username, email, password, id);
+        Log.d(toString(),username+" - "+email+" - "+password+" - pour l'id : "+id);
+        try
+        {
+            Log.v(toString(), updateUser.get());
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         }
         catch (InterruptedException e)
         {
@@ -311,6 +324,7 @@ public class UserDB extends DatabaseHandler
         {
             e.printStackTrace();
         }
+<<<<<<< HEAD
 
 
     }
@@ -320,12 +334,24 @@ public class UserDB extends DatabaseHandler
         String urlProvided = null;
 
         public MyAsyncTaskUpdateUserExperience(String url)
+=======
+    }
+    class MyAsyncTaskUpdateUser extends AsyncTask<String, Void, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTaskUpdateUser(String url)
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         {
             urlProvided = url;
         }
 
         @Override
+<<<<<<< HEAD
         protected String doInBackground(Integer... params)
+=======
+        protected String doInBackground(String... params)
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         {
             HttpURLConnection conn;
 
@@ -341,6 +367,7 @@ public class UserDB extends DatabaseHandler
                 // setDoInput and setDoOutput method depict handling of both send and receive
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
+<<<<<<< HEAD
 
                 // Append parameters to URL
                 Uri.Builder builder = new Uri.Builder()
@@ -349,6 +376,20 @@ public class UserDB extends DatabaseHandler
 
                 Log.v(this.toString(), "Contenu de la query = " + builder.toString());
 
+=======
+                Log.d(toString()," username: "+String.valueOf(params[0])+
+                        " mail: "+String.valueOf(params[1])+
+                        " password: "+String.valueOf(params[2])+
+                        " -> ID : "+String.valueOf(params[3]));
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("username", String.valueOf(params[0]))
+                        .appendQueryParameter("mail", String.valueOf(params[1]))
+                        .appendQueryParameter("password", String.valueOf(params[2]))
+                        .appendQueryParameter("idUser", String.valueOf(params[3]));
+
+                Log.v(this.toString(), "Contenu de la query = " + builder.toString());
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data
@@ -360,7 +401,10 @@ public class UserDB extends DatabaseHandler
                 writer.close();
                 os.close();
                 conn.connect();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
             }
             catch (IOException e1)
             {
@@ -368,6 +412,7 @@ public class UserDB extends DatabaseHandler
                 e1.printStackTrace();
                 return "exception";
             }
+<<<<<<< HEAD
 
             try
             {
@@ -398,6 +443,21 @@ public class UserDB extends DatabaseHandler
                     return ("unsuccessful");
                 }
 
+=======
+            try
+            {
+                int response_code = conn.getResponseCode();
+                Log.v(toString(), "Reponse = " + response_code);
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+                    return "success";
+                }
+                else
+                {
+                    return ("unsuccessful");
+                }
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
             }
             catch (IOException e)
             {
@@ -415,6 +475,11 @@ public class UserDB extends DatabaseHandler
         {
             super.onPostExecute(s);
         }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
     }
 
 
