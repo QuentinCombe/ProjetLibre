@@ -116,6 +116,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 startActivity(myIntent);
             }
+//            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//
+//            editor.remove("userMail");
+//            editor.remove("userPassword");
+//
+//            editor.commit();
         }
         else
         {

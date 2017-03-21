@@ -17,6 +17,7 @@ import org.w3c.dom.Text;
 import java.io.IOException;
 
 import fr.univ_tours.polytech.projetlibre.R;
+import fr.univ_tours.polytech.projetlibre.database.UserDB;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
@@ -38,19 +39,21 @@ public class SettingsController
     {
         mRootView = rootView;
 
-        User user = GlobalDatas.getInstance().mCurrentUser;
+        final User user = GlobalDatas.getInstance().mCurrentUser;
 
         Log.d(toString(),"USER RECIEVED"+user.username);
 
 
-        TextView username = (TextView) rootView.findViewById(R.id.NameField);
+        final TextView username = (TextView) rootView.findViewById(R.id.NameField);
         username.setText(user.username);
 
-        TextView email = (TextView) rootView.findViewById(R.id.EmailField);
+        final TextView email = (TextView) rootView.findViewById(R.id.EmailField);
         email.setText(user.mail);
 
-        TextView password = (TextView) rootView.findViewById(R.id.PasswordField);
+        final TextView password = (TextView) rootView.findViewById(R.id.PasswordField);
         password.setText(user.password);
+
+        final TextView confirmPass = (TextView) rootView.findViewById(R.id.confirmPass);
 
         validate = (Button) rootView.findViewById(R.id.validate);
 
@@ -58,11 +61,46 @@ public class SettingsController
         validate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.d(toString(),password.getText().toString()+" = ? "+user.password);
                 //Validate and send the data to the BDD
-                Toast toast = Toast.makeText(mRootView.getContext(),"Settings saved !" , Toast.LENGTH_SHORT);
-                toast.show();
+                if (password.getText().toString().equals(user.password)){
+                    Log.d(toString(),"On change pas le mdp"+password.getText().toString()+" = ? "+user.password);
+                    UserDB.getInstance().updateUser(username.getText().toString(), email.getText().toString(), password.getText().toString(), Integer.toString(user.idUser));
+                    Toast toast = Toast.makeText(mRootView.getContext(),"Settings saved !" , Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else if(password.getText().toString().equals(confirmPass.getText().toString())){
+
+                    if(isPasswordValid(password.getText().toString())){
+                        UserDB.getInstance().updateUser(username.getText().toString(), email.getText().toString(), password.getText().toString(), Integer.toString(user.idUser));
+                        Toast toast = Toast.makeText(mRootView.getContext(),"Settings saved !" , Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else{
+                        password.setError("Your password is not enough secure");
+                    }
+                }
+                else{
+                    Toast toast = Toast.makeText(mRootView.getContext(),"Please confirm the password" , Toast.LENGTH_SHORT);
+                    password.setError("Please confirm the password");
+                    toast.show();
+                }
+
             }
         });
+    }
+
+    private boolean isPasswordValid(String password)
+    {
+        if(password.length()>8)
+            if((password.contains("1"))||(password.contains("2"))||(password.contains("3"))||(password.contains("4"))||
+                    (password.contains("5"))||(password.contains("6"))||(password.contains("7"))||(password.contains("8")
+            )||(password.contains("9"))){
+                return true;
+            }
+        return false;
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

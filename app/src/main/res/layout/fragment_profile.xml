@@ -67,9 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="visible">
-
-        </ListView>
+            android:visibility="visible"
+            android:textColor="@color/colorPrimary"
+            />
 
         <TextView
             android:id="@+id/QuestField"
@@ -87,8 +87,14 @@
             android:id="@+id/deconnexionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Deconnexion"/>
+            android:layout_gravity="center_horizontal|center"
+            android:text="Deconnexion"
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:backgroundTintMode="add"
+            style="@style/AppTheme" />
 
         <ListView
             android:id="@+id/QuestAchievedList"
