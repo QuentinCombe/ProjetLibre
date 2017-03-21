@@ -62,18 +62,6 @@
             android:paddingRight="35dp"
             android:paddingLeft="35dp" />
 
-<<<<<<< HEAD
-=======
-        <ListView
-            android:id="@+id/achievedObjectivesList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible"
-            android:textColor="@color/colorPrimary"
-            />
-
->>>>>>> 2a38de8e4cc4fbace16bf5ef13d39c30c0f6fcaa
         <TextView
             android:id="@+id/QuestField"
             android:layout_width="match_parent"
