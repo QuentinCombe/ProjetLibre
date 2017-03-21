@@ -22,6 +22,8 @@ public class ObjectiveFoundView extends LinearLayout implements View.OnClickList
 {
     private TextView textView = null;
 
+    private View mCantClickView;
+
     public ObjectiveFoundView(Context context)
     {
         super(context);
@@ -38,6 +40,11 @@ public class ObjectiveFoundView extends LinearLayout implements View.OnClickList
     {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
+    }
+
+    public void setCantClickView(View cantClickView)
+    {
+        mCantClickView = cantClickView;
     }
 
     private void init(AttributeSet attrs, int defStyle)
@@ -66,6 +73,8 @@ public class ObjectiveFoundView extends LinearLayout implements View.OnClickList
     @Override
     public void onClick(View v)
     {
+        mCantClickView.setVisibility(INVISIBLE);
         this.setVisibility(View.INVISIBLE);
+
     }
 }

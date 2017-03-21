@@ -457,7 +457,7 @@ public class UserDB extends DatabaseHandler
 
                 Log.v(this.toString(), "Contenu de la query = " + builder.toString());
 
-                
+
                 String query = builder.build().getEncodedQuery();
 
                 // Open connection for sending data

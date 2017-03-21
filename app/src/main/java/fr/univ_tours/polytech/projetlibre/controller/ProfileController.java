@@ -36,7 +36,9 @@ public class ProfileController implements View.OnClickListener
     private ArrayAdapter<String> adapter;
     private ArrayList<String> listObjectivesString = null;
 
+    private TextView playerNameTextView = null;
     private TextView expTextView = null;
+
 
     /*Affecter les valeur au component de la vue
     Tout ce ue j'ai fait dans la vue
@@ -54,9 +56,6 @@ public class ProfileController implements View.OnClickListener
 
         Log.d(toString(),"USER RECIEVED"+user.username);
 
-        TextView profilName = (TextView) mRootView.findViewById(R.id.ProfileName);
-        profilName.setText(user.username);
-
         TextView lvl = (TextView) mRootView.findViewById(R.id.lvlField);
         lvl.setText("Lvl :"+user.lvl);
 
@@ -67,6 +66,9 @@ public class ProfileController implements View.OnClickListener
         deconnexionButton.setOnClickListener(this);
 
         achievedObjectivesListView = (ListView) mRootView.findViewById(R.id.achievedObjectivesList);
+
+        playerNameTextView = (TextView) mRootView.findViewById(R.id.playerNameTextView);
+        playerNameTextView.setText(user.username);
 
         constructAchievedObjectivesList();
 
@@ -98,6 +100,11 @@ public class ProfileController implements View.OnClickListener
         adapter.notifyDataSetChanged();
 
         expTextView.setText("Experience : " + GlobalDatas.getInstance().mCurrentUser.exp);
+    }
+
+    public void updatePlayerName(String name)
+    {
+        playerNameTextView.setText(name);
     }
 
     @Override

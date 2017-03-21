@@ -2,8 +2,10 @@ package fr.univ_tours.polytech.projetlibre.controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -30,9 +32,12 @@ public class SettingsController
     private View mRootView;
     Button validate;
 
+    private MainActivity mMainActivity = null;
 
-    public SettingsController()
+
+    public SettingsController(MainActivity mainActivity)
     {
+        this.mMainActivity = mainActivity;
     }
 
     public void setRootView(View rootView)
@@ -64,16 +69,34 @@ public class SettingsController
 
                 Log.d(toString(),password.getText().toString()+" = ? "+user.password);
                 //Validate and send the data to the BDD
-                if (password.getText().toString().equals(user.password)){
+                if (password.getText().toString().equals(user.password))
+                {
                     Log.d(toString(),"On change pas le mdp"+password.getText().toString()+" = ? "+user.password);
                     UserDB.getInstance().updateUser(username.getText().toString(), email.getText().toString(), password.getText().toString(), Integer.toString(user.idUser));
                     Toast toast = Toast.makeText(mRootView.getContext(),"Settings saved !" , Toast.LENGTH_SHORT);
                     toast.show();
+
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mMainActivity.getApplicationContext()).edit();
+
+                    editor.putString("userMail", email.getText().toString());
+                    editor.putString("userPassword", password.getText().toString());
+
+                    editor.commit();
+
+                    mMainActivity.updatePlayerName(username.getText().toString());
                 }
                 else if(password.getText().toString().equals(confirmPass.getText().toString())){
 
                     if(isPasswordValid(password.getText().toString())){
                         UserDB.getInstance().updateUser(username.getText().toString(), email.getText().toString(), password.getText().toString(), Integer.toString(user.idUser));
+
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mMainActivity.getApplicationContext()).edit();
+
+                        editor.putString("userMail", email.getText().toString());
+                        editor.putString("userPassword", password.getText().toString());
+
+                        editor.commit();
+
                         Toast toast = Toast.makeText(mRootView.getContext(),"Settings saved !" , Toast.LENGTH_SHORT);
                         toast.show();
                     }
@@ -86,6 +109,8 @@ public class SettingsController
                     password.setError("Please confirm the password");
                     toast.show();
                 }
+
+
 
             }
         });

@@ -26,12 +26,13 @@ public class Clue implements Serializable
 
         //rotatedBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight(), matrix, true);
 
-        Bitmap baseBitmap = ClueDB.getInstance().getBitmapClueFromName(imageName);
+        this.image = ClueDB.getInstance().getBitmapClueFromName(imageName);
+        /*Bitmap baseBitmap = ClueDB.getInstance().getBitmapClueFromName(imageName);
 
-        Matrix matrix = new Matrix();
+        atrix matrix = new Matrix();
         matrix.postRotate(90);
 
-        this.image = Bitmap.createBitmap(baseBitmap, 0, 0, baseBitmap.getWidth(), baseBitmap.getHeight(), matrix, true);
+        this.image = Bitmap.createBitmap(baseBitmap, 0, 0, baseBitmap.getWidth(), baseBitmap.getHeight(), matrix, true);*/
 
         imageLoaded = true;
     }

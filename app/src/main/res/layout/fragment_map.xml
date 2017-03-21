@@ -40,16 +40,33 @@
             android:padding="16dp"/>
     </LinearLayout>
 
+    <View
+        android:id="@+id/cantClickView"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+
+        android:background="#555555aa"
+        android:clickable="true"
+
+        android:visibility="invisible">
+
+    </View>
+
+
 <!-- ImageView correspondant à l'objectif -->
     <ImageView
         android:id="@+id/clueImageView"
-        android:layout_width="700px"
-        android:layout_height="931px"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+
+        android:layout_gravity="center"
         android:layout_margin="8dp"
         android:background="#000000"
         android:padding="1dp"
-        android:src="@drawable/sunset"
+
         android:visibility="invisible"/>
 
 <!-- Vue qui apparait lorsqu'on a trouvé un objectif -->

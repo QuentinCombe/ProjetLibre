@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
         mMapController = new MapController(this);
 
         mProfileController = new ProfileController(this);
-        mSettingsController = new SettingsController();
+        mSettingsController = new SettingsController(this);
 
         //Initializing the tabLayout
         tabFooter = (TabLayout) findViewById(R.id.footer);
@@ -153,6 +153,11 @@ public class MainActivity extends AppCompatActivity
     public void updateObjectiveFound(Objective objectiveFound)
     {
         mProfileController.updateObjectiveFound(objectiveFound);
+    }
+
+    public void updatePlayerName(String name)
+    {
+        mProfileController.updatePlayerName(name);
     }
 
 }

@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.vuforia.VIEW;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,8 +42,6 @@ public class MapController implements View.OnClickListener
 {
     private View mRootView;
 
-    private FrameLayout mapFragmentLayout;
-
     private LinearLayout objectiveInfoLayout;
 
     private ImageView mClueImageView;
@@ -54,6 +53,8 @@ public class MapController implements View.OnClickListener
     private Objective mSelectedObjective = null;
 
     private ObjectiveFoundView objectiveFoundView = null;
+
+    private View cantClickView = null;
 
     private MainActivity mMainActivity = null;
     private GoogleMap mMap = null;
@@ -78,8 +79,7 @@ public class MapController implements View.OnClickListener
                 if (!achievedObjectives.contains(objective))
                 {
                     circleOptions.strokeWidth(0.0f).fillColor(ContextCompat.getColor(mMainActivity, R.color.normalCircle));
-                }
-                else
+                } else
                 {
                     circleOptions.strokeWidth(0.0f).fillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
                 }
@@ -116,9 +116,11 @@ public class MapController implements View.OnClickListener
                 }
 
                 Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         showClue();
                     }
                 }, 100);
@@ -132,6 +134,9 @@ public class MapController implements View.OnClickListener
             public void onClick(View v)
             {
                 mClueImageView.setVisibility(View.INVISIBLE);
+                cantClickView.setVisibility(View.INVISIBLE);
+
+                // mMap.setClic
             }
         });
 
@@ -139,9 +144,14 @@ public class MapController implements View.OnClickListener
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
 
-        objectiveFoundView = (ObjectiveFoundView) mRootView.findViewById(R.id.objectiveFoundView);
+
 
         openCameraButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
+
+        cantClickView = mRootView.findViewById(R.id.cantClickView);
+
+        objectiveFoundView = (ObjectiveFoundView) mRootView.findViewById(R.id.objectiveFoundView);
+        objectiveFoundView.setCantClickView(cantClickView);
     }
 
     public void setMap(GoogleMap map)
@@ -151,7 +161,7 @@ public class MapController implements View.OnClickListener
 
     public Circle getSelectedCircle(LatLng position)
     {
-        for (Circle circle: mCircles.values())
+        for (Circle circle : mCircles.values())
         {
             LatLng center = circle.getCenter();
             double radius = circle.getRadius();
@@ -169,6 +179,7 @@ public class MapController implements View.OnClickListener
 
     public void handleOnMapClick(LatLng position)
     {
+
         Circle circle = getSelectedCircle(position);
 
         // Si on a déjà cliqué sur un autre cercle au préalable
@@ -207,8 +218,7 @@ public class MapController implements View.OnClickListener
                 if (GlobalDatas.getInstance().mCurrentUser.achievedObjectives.contains(mSelectedObjective))
                 {
                     openCameraButton.setActivated(false);
-                }
-                else
+                } else
                 {
                     openCameraButton.setActivated(true);
                 }
@@ -220,8 +230,7 @@ public class MapController implements View.OnClickListener
 
             mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
 
-        }
-        else
+        } else
         {
             if (objectiveInfoLayout.getVisibility() == View.VISIBLE)
             {
@@ -230,6 +239,7 @@ public class MapController implements View.OnClickListener
         }
 
         mClueImageView.setVisibility(View.INVISIBLE);
+
     }
 
     public void clearMapView()
@@ -245,7 +255,12 @@ public class MapController implements View.OnClickListener
             mClueImageView.setImageBitmap(mSelectedObjective.clue.image);
         }
 
+        cantClickView.setVisibility(View.VISIBLE);
+        //cantClickView.bringToFront();
+
         mClueImageView.setVisibility(View.VISIBLE);
+        //mClueImageView.bringToFront();
+
     }
 
     public void checkIfAnObjectiveWasFound()
@@ -256,8 +271,7 @@ public class MapController implements View.OnClickListener
         if (!file.exists())
         {
             Toast.makeText(mMainActivity, "Aucun objectif trouve", Toast.LENGTH_LONG).show();
-        }
-        else
+        } else
         {
             try
             {
@@ -293,15 +307,13 @@ public class MapController implements View.OnClickListener
                 mMainActivity.updateObjectiveFound(objectiveFound);
 
                 createObjectiveFoundView(objectiveFound);
-            }
-            else
+            } else
             {
                 Toast.makeText(mMainActivity, "Vous avez deja trouve cet objectif", Toast.LENGTH_LONG).show();
             }
 
 
         }
-
 
 
     }
@@ -311,6 +323,7 @@ public class MapController implements View.OnClickListener
         objectiveFoundView.setObjective(objectiveFound);
 
         objectiveFoundView.setVisibility(View.VISIBLE);
+        cantClickView.setVisibility(View.VISIBLE);
     }
 
     @Override
