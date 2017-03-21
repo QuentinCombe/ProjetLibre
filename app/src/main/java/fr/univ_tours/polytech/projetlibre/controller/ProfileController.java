@@ -80,7 +80,7 @@ public class ProfileController implements View.OnClickListener
 
         for (Objective objective : achievedObjectives)
         {
-            listObjectivesString.add("Num = " + objective.id + " : " + objective.textAfterDiscovery);
+            listObjectivesString.add("1 : " + objective.id + " : " + objective.textAfterDiscovery);
         }
 
         adapter = new ArrayAdapter<String>(

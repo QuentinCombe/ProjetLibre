@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
+import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 /**
@@ -286,6 +287,134 @@ public class UserDB extends DatabaseHandler
         }
 
 
+    }
+
+    public void updateUserExperience(int idUser, int exp)
+    {
+        scriptToExecute = "scripts/updateUserExperience.php";
+
+        MyAsyncTaskUpdateUserExperience updateUserExperienceAsyncTask = new MyAsyncTaskUpdateUserExperience(baseUrl + scriptToExecute);
+
+        Log.v(toString(), baseUrl + scriptToExecute);
+
+        updateUserExperienceAsyncTask.execute(idUser, exp);
+
+        try
+        {
+            Log.v(toString(), updateUserExperienceAsyncTask.get());
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    class MyAsyncTaskUpdateUserExperience extends AsyncTask<Integer, Void, String>
+    {
+        String urlProvided = null;
+
+        public MyAsyncTaskUpdateUserExperience(String url)
+        {
+            urlProvided = url;
+        }
+
+        @Override
+        protected String doInBackground(Integer... params)
+        {
+            HttpURLConnection conn;
+
+            try
+            {
+                URL url = new URL(urlProvided);
+
+                conn = (HttpURLConnection) url.openConnection();
+                // conn.setReadTimeout(READ_TIMEOUT);
+                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("POST");
+
+                // setDoInput and setDoOutput method depict handling of both send and receive
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("idUser", String.valueOf(params[0]))
+                        .appendQueryParameter("exp", String.valueOf(params[1]));
+
+                Log.v(this.toString(), "Contenu de la query = " + builder.toString());
+
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conn.connect();
+
+            }
+            catch (IOException e1)
+            {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return "exception";
+            }
+
+            try
+            {
+
+                int response_code = conn.getResponseCode();
+
+                // Check if successful connection made
+                if (response_code == HttpURLConnection.HTTP_OK)
+                {
+
+                    // Read data sent from server
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null)
+                    {
+                        result.append(line);
+                    }
+
+                    // Pass data to onPostExecute method
+                    return (result.toString());
+
+                } else
+                {
+
+                    return ("unsuccessful");
+                }
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "exception";
+            }
+            finally
+            {
+                conn.disconnect();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s)
+        {
+            super.onPostExecute(s);
+        }
     }
 
 

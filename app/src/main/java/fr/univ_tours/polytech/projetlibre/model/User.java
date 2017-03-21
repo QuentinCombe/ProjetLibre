@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import fr.univ_tours.polytech.projetlibre.database.AchievedObjectivesDB;
+import fr.univ_tours.polytech.projetlibre.database.UserDB;
 
 /**
  * Created by quent on 06/03/2017.
@@ -63,6 +64,11 @@ public class User implements Serializable {
     {
         achievedObjectives.add(objective);
 
+        // Update the database (table AchievedObjectives)
+        AchievedObjectivesDB.getInstance().insertAchievedObjective(idUser, objective.id);
+
         exp += objective.reward;
+
+        UserDB.getInstance().updateUserExperience(idUser, exp);
     }
 }

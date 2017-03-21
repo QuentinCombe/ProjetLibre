@@ -6,7 +6,7 @@ MDP : *******
 Gestion de la BDD : https://databases-auth.000webhost.com/index.php
 Nom du sous domaine : projetlibrecapocombemorel.netai.net
 Nom de la BDD : id1089444_projetlibre
-User : capo
+User : id1089444_capo
 MDP : ******
 
 

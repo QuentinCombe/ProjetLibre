@@ -43,8 +43,9 @@
 <!-- ImageView correspondant à l'objectif -->
     <ImageView
         android:id="@+id/clueImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="700px"
+        android:layout_height="931px"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
         android:background="#000000"
         android:padding="1dp"

@@ -81,7 +81,6 @@ public class MapController implements View.OnClickListener
                 }
                 else
                 {
-                    Log.v(toString(), "CERCLE TROUVEEEE");
                     circleOptions.strokeWidth(0.0f).fillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
                 }
 
@@ -251,54 +250,45 @@ public class MapController implements View.OnClickListener
 
     public void checkIfAnObjectiveWasFound()
     {
-        // Try to open the file
-        //if (mMapTab != null)
+        File file = new File(mMainActivity.getExternalFilesDir(null), "obj.txt");
+        String contentFile = null;
+
+        if (!file.exists())
         {
-            File file = new File(mMainActivity.getExternalFilesDir(null), "obj.txt");
-            String contentFile = null;
-
-            if (!file.exists())
+            Toast.makeText(mMainActivity, "Aucun objectif trouve", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            try
             {
-                Toast.makeText(mMainActivity, "Aucun objectif trouve", Toast.LENGTH_LONG).show();
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                contentFile = br.readLine();
             }
-            else
+            catch (FileNotFoundException e)
             {
-                try
-                {
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-                    contentFile = br.readLine();
-                }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
             }
 
-            if (contentFile != null)
+        }
+
+        if (contentFile != null)
+        {
+            User currentUser = GlobalDatas.getInstance().mCurrentUser;
+
+            Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
+
+            if (!currentUser.achievedObjectives.contains(objectiveFound))
             {
-                User currentUser = GlobalDatas.getInstance().mCurrentUser;
+                currentUser.addObjectiveFound(objectiveFound);
 
-                Objective objectiveFound = GlobalDatas.getInstance().getObjectiveById(Integer.parseInt(contentFile));
+                file.delete();
 
-                if (!currentUser.achievedObjectives.contains(objectiveFound))
-                {
-                    Toast.makeText(mMainActivity, "Vous avez trouve le num " + objectiveFound.id, Toast.LENGTH_LONG).show();
-
-                    // Update the database (table AchievedObjectives)
-                    AchievedObjectivesDB.getInstance().insertAchievedObjective(currentUser.idUser, Integer.parseInt(contentFile));
-
-                    currentUser.addObjectiveFound(objectiveFound);
-
-                    file.delete();
-
-                    // Update the color of the circle
-                    mCircles.get(objectiveFound).setFillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
-                }
+                // Update the color of the circle
+                mCircles.get(objectiveFound).setFillColor(ContextCompat.getColor(mMainActivity, R.color.foundCircle));
 
                 mMainActivity.updateObjectiveFound(objectiveFound);
 
@@ -309,7 +299,11 @@ public class MapController implements View.OnClickListener
                 Toast.makeText(mMainActivity, "Vous avez deja trouve cet objectif", Toast.LENGTH_LONG).show();
             }
 
+
         }
+
+
+
     }
 
     private void createObjectiveFoundView(Objective objectiveFound)

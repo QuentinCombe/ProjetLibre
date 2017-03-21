@@ -1,6 +1,7 @@
 package fr.univ_tours.polytech.projetlibre.model;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +23,15 @@ public class Clue implements Serializable
 
     public void loadImage()
     {
-        this.image = ClueDB.getInstance().getBitmapClueFromName(imageName);
+
+        //rotatedBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap.getHeight(), matrix, true);
+
+        Bitmap baseBitmap = ClueDB.getInstance().getBitmapClueFromName(imageName);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        this.image = Bitmap.createBitmap(baseBitmap, 0, 0, baseBitmap.getWidth(), baseBitmap.getHeight(), matrix, true);
 
         imageLoaded = true;
     }

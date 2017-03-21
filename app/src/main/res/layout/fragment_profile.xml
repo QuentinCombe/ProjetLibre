@@ -62,6 +62,17 @@
             android:paddingRight="35dp"
             android:paddingLeft="35dp" />
 
+        <TextView
+            android:id="@+id/QuestField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.04"
+            android:text="Objectifs trouvés"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:visibility="gone"/>
+
         <ListView
             android:id="@+id/achievedObjectivesList"
             android:layout_width="wrap_content"
@@ -71,16 +82,7 @@
 
         </ListView>
 
-        <TextView
-            android:id="@+id/QuestField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.04"
-            android:text="Quest achieved"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:visibility="gone"/>
+
 
 
         <Button
@@ -89,14 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Deconnexion"/>
-
-        <ListView
-            android:id="@+id/QuestAchievedList"
-            android:layout_width="match_parent"
-            android:layout_height="99dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.60"
-            android:visibility="gone"/>
 
     </LinearLayout>
 </FrameLayout>
