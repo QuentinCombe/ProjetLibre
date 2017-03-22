@@ -32,6 +32,7 @@ import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
 import fr.univ_tours.polytech.projetlibre.model.User;
+import fr.univ_tours.polytech.projetlibre.view.ClueView;
 import fr.univ_tours.polytech.projetlibre.view.ObjectiveFoundView;
 
 /**
@@ -44,7 +45,6 @@ public class MapController implements View.OnClickListener
 
     private LinearLayout objectiveInfoLayout;
 
-    private ImageView mClueImageView;
     private Button openCameraButton;
 
     private HashMap<Objective, CircleOptions> mCirclesOptions = new HashMap<>();
@@ -53,6 +53,7 @@ public class MapController implements View.OnClickListener
     private Objective mSelectedObjective = null;
 
     private ObjectiveFoundView objectiveFoundView = null;
+    private ClueView mClueView = null;
 
     private View cantClickView = null;
 
@@ -101,7 +102,6 @@ public class MapController implements View.OnClickListener
         mRootView = rootView;
 
         objectiveInfoLayout = (LinearLayout) mRootView.findViewById(R.id.objectiveInfoLayout);
-        mClueImageView = (ImageView) mRootView.findViewById(R.id.clueImageView);
 
         Button showClueButton = (Button) mRootView.findViewById(R.id.showClueButton);
 
@@ -128,18 +128,6 @@ public class MapController implements View.OnClickListener
             }
         });
 
-        mClueImageView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mClueImageView.setVisibility(View.INVISIBLE);
-                cantClickView.setVisibility(View.INVISIBLE);
-
-                // mMap.setClic
-            }
-        });
-
 
         Button openCameraModeButton = (Button) mRootView.findViewById(R.id.openCameraModeButton);
         openCameraModeButton.setOnClickListener(this);
@@ -152,6 +140,21 @@ public class MapController implements View.OnClickListener
 
         objectiveFoundView = (ObjectiveFoundView) mRootView.findViewById(R.id.objectiveFoundView);
         objectiveFoundView.setCantClickView(cantClickView);
+
+        mClueView = (ClueView) mRootView.findViewById(R.id.clueView);
+        mClueView.setCantClickView(cantClickView);
+
+        mClueView.setOnClickListener(new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            mClueView.setVisibility(View.INVISIBLE);
+            cantClickView.setVisibility(View.INVISIBLE);
+
+            // mMap.setClic
+        }
+    });
     }
 
     public void setMap(GoogleMap map)
@@ -212,13 +215,14 @@ public class MapController implements View.OnClickListener
 
                 if (mSelectedObjective.clue.image != null)
                 {
-                    mClueImageView.setImageBitmap(mSelectedObjective.clue.image);
+                    mClueView.setClue(mSelectedObjective.clue);
                 }
 
                 if (GlobalDatas.getInstance().mCurrentUser.achievedObjectives.contains(mSelectedObjective))
                 {
                     openCameraButton.setActivated(false);
-                } else
+                }
+                else
                 {
                     openCameraButton.setActivated(true);
                 }
@@ -238,13 +242,13 @@ public class MapController implements View.OnClickListener
             }
         }
 
-        mClueImageView.setVisibility(View.INVISIBLE);
+        mClueView.setVisibility(View.INVISIBLE);
 
     }
 
     public void clearMapView()
     {
-        mClueImageView.setVisibility(View.INVISIBLE);
+        mClueView.setVisibility(View.INVISIBLE);
     }
 
     public void showClue()
@@ -252,13 +256,16 @@ public class MapController implements View.OnClickListener
         if (!mSelectedObjective.clue.isImageLoaded())
         {
             mSelectedObjective.clue.loadImage();
-            mClueImageView.setImageBitmap(mSelectedObjective.clue.image);
+
+            mClueView.setClue(mSelectedObjective.clue);
+
+
         }
 
         cantClickView.setVisibility(View.VISIBLE);
         //cantClickView.bringToFront();
 
-        mClueImageView.setVisibility(View.VISIBLE);
+        mClueView.setVisibility(View.VISIBLE);
         //mClueImageView.bringToFront();
 
     }

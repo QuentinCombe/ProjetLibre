@@ -104,24 +104,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            if (sharedPref.contains("userMail") && sharedPref.contains("userPassword"))
-            {
-                String mail = sharedPref.getString("userMail", null);
-                String password = sharedPref.getString("userPassword", null);
-
-                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-
-                myIntent.putExtra("userMail", mail);
-                myIntent.putExtra("userPassword", password);
-
-                startActivity(myIntent);
-            }
-//            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+//            if (sharedPref.contains("userMail") && sharedPref.contains("userPassword"))
+//            {
+//                String mail = sharedPref.getString("userMail", null);
+//                String password = sharedPref.getString("userPassword", null);
 //
-//            editor.remove("userMail");
-//            editor.remove("userPassword");
+//                Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
 //
-//            editor.commit();
+//                myIntent.putExtra("userMail", mail);
+//                myIntent.putExtra("userPassword", password);
+//
+//                startActivity(myIntent);
+//            }
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+
+            editor.remove("userMail");
+            editor.remove("userPassword");
+
+            editor.commit();
         }
         else
         {
@@ -198,6 +198,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Store values at the time of the login attempt.
             String email = mEmailView.getText().toString();
             String password = mPasswordView.getText().toString();
+
+            password = UserDB.getInstance().toMD5(password);
 
             boolean cancel = false;
             View focusView = null;

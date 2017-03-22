@@ -18,6 +18,7 @@ public class Clue implements Serializable
 {
     public int idClue;
     private String imageName;
+    public String description;
     private boolean imageLoaded = false;
     public Bitmap image;
 
@@ -52,6 +53,8 @@ public class Clue implements Serializable
 
             clue.imageName = jsonObject.getString("image");
             clue.image = null;
+
+            clue.description = jsonObject.getString("description");
 
         }
         catch (JSONException e)

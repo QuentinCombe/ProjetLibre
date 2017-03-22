@@ -46,7 +46,7 @@
 
         android:layout_height="match_parent"
 
-        android:background="#555555aa"
+        android:background="#70414644"
         android:clickable="true"
 
         android:visibility="invisible">
@@ -55,25 +55,20 @@
 
 
 <!-- ImageView correspondant à l'objectif -->
-    <ImageView
-        android:id="@+id/clueImageView"
+    <fr.univ_tours.polytech.projetlibre.view.ClueView
+        android:id="@+id/clueView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-
         android:layout_gravity="center"
-        android:layout_margin="8dp"
-        android:background="#000000"
-        android:padding="1dp"
+        android:visibility="invisible"
+        />
 
-        android:visibility="invisible"/>
 
 <!-- Vue qui apparait lorsqu'on a trouvé un objectif -->
     <fr.univ_tours.polytech.projetlibre.view.ObjectiveFoundView
         android:id="@+id/objectiveFoundView"
-        android:layout_width="250dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:background="@color/colorAccent"
         android:visibility="invisible"/>

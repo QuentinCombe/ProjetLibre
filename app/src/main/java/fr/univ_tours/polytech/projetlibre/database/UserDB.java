@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
@@ -32,6 +34,34 @@ public class UserDB extends DatabaseHandler
     protected UserDB()
     {
 
+    }
+
+    public static String toMD5(String pass)
+    {
+        MessageDigest digest = null;
+        try
+        {
+            digest = MessageDigest
+                    .getInstance("MD5");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+
+        digest.update(pass.getBytes());
+        byte messageDigest[] = digest.digest();
+
+        // Create Hex String
+        StringBuilder hexString = new StringBuilder();
+        for (byte aMessageDigest : messageDigest) {
+            String h = Integer.toHexString(0xFF & aMessageDigest);
+            while (h.length() < 2)
+                h = "0" + h;
+            hexString.append(h);
+        }
+
+        return hexString.toString();
     }
 
     public static UserDB getInstance()

@@ -127,6 +127,9 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
 
             showProgress(true);
+
+            password = UserDB.getInstance().toMD5(password);
+
             UserDB.getInstance().insertUser(name, email, password);
 
             //finish();
