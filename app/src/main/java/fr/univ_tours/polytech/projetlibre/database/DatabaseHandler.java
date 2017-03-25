@@ -38,6 +38,6 @@ public class DatabaseHandler
     protected String scriptToExecute = null;
     protected final String baseUrl = "http://projetlibrecapocombemorel.netai.net/";
 
-    protected final int READ_TIMEOUT = 3000;
+    protected final int TIMEOUT = 3000;
 
 }

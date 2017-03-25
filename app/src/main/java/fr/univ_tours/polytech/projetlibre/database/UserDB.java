@@ -134,8 +134,8 @@ public class UserDB extends DatabaseHandler
 
                 URL url = new URL(urlProvided);
                 conn = (HttpURLConnection) url.openConnection();
-                // conn.setReadTimeout(READ_TIMEOUT);
-                //conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setReadTimeout(TIMEOUT);
+                conn.setConnectTimeout(TIMEOUT);
                 conn.setRequestMethod("POST");
 
                 // setDoInput and setDoOutput method depict handling of both send and receive

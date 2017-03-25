@@ -21,6 +21,7 @@ import java.util.List;
 import fr.univ_tours.polytech.projetlibre.R;
 import fr.univ_tours.polytech.projetlibre.model.GlobalDatas;
 import fr.univ_tours.polytech.projetlibre.model.Objective;
+import fr.univ_tours.polytech.projetlibre.model.ObjectiveFoundDataModel;
 import fr.univ_tours.polytech.projetlibre.model.User;
 
 /**
@@ -33,8 +34,8 @@ public class ProfileController implements View.OnClickListener
     private MainActivity mMainActivity = null;
 
     private ListView achievedObjectivesListView = null;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> listObjectivesString = null;
+    private ArrayAdapter<ObjectiveFoundDataModel> adapter;
+    private ArrayList<ObjectiveFoundDataModel> listObjectivesDataModel = null;
 
     private TextView playerNameTextView = null;
     private TextView expTextView = null;
@@ -77,25 +78,22 @@ public class ProfileController implements View.OnClickListener
 
     private void constructAchievedObjectivesList()
     {
-        listObjectivesString = new ArrayList<>();
+        listObjectivesDataModel = new ArrayList<>();
         List<Objective> achievedObjectives = GlobalDatas.getInstance().mCurrentUser.achievedObjectives;
 
         for (Objective objective : achievedObjectives)
         {
-            listObjectivesString.add("1 : " + objective.id + " : " + objective.textAfterDiscovery);
+            listObjectivesDataModel.add(new ObjectiveFoundDataModel(String.valueOf(objective.id), objective.textAfterDiscovery, "Trouve ici"));
         }
 
-        adapter = new ArrayAdapter<String>(
-                mMainActivity.getApplicationContext(),
-                android.R.layout.simple_list_item_1,
-                listObjectivesString);
+        adapter = new ObjectiveListViewAdapter(listObjectivesDataModel, mMainActivity);
 
         achievedObjectivesListView.setAdapter(adapter);
     }
 
     public void updateObjectiveFound(Objective objectiveFound)
     {
-        listObjectivesString.add("Num = " + objectiveFound.id + " : " + objectiveFound.textAfterDiscovery);
+        listObjectivesDataModel.add(new ObjectiveFoundDataModel(String.valueOf(objectiveFound.id), objectiveFound.textAfterDiscovery, "Trouve ici"));
 
         adapter.notifyDataSetChanged();
 

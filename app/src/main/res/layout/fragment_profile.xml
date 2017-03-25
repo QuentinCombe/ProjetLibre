@@ -28,19 +28,16 @@
                 android:id="@+id/deconnexionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_margin="15dp"
                 android:background="@color/colorPrimary"
-                android:text="Deconnexion"
+                android:text="Deco"
                 android:textAlignment="center"
                 android:textColor="#fff"
                 android:textSize="12sp"/>
 
         </RelativeLayout>
-
-
-
 
 
         <TextView
@@ -57,7 +54,7 @@
             android:id="@+id/lvlField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:gravity="center"
             android:text="Niveau : "
             android:textColor="@color/colorPrimary"
@@ -68,7 +65,7 @@
             android:id="@+id/ExpField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:gravity="center"
             android:text="Experience : "
             android:textColor="@color/colorPrimary"
@@ -77,7 +74,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="12dp"
             app:srcCompat="@color/colorPrimary"/>
 
         <TextView
@@ -91,7 +88,7 @@
 
         <ListView
             android:id="@+id/achievedObjectivesList"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"

@@ -248,6 +248,7 @@ public class MapController implements View.OnClickListener
 
     public void clearMapView()
     {
+        cantClickView.setVisibility(View.INVISIBLE);
         mClueView.setVisibility(View.INVISIBLE);
     }
 
